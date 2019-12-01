@@ -40,6 +40,10 @@
 \newcommand{\py}[1]{{\tt #1}}
 \newcommand{\att}[1]{{\tt #1}}
 
+
+\newcommand{\AV}[1]{{\color{red} AV: #1}}
+\newcommand{\JV}[1]{{\color{svlinks} JV: #1}}
+
 %----------------------------------------------------------------------------------------
 %	ARTICLE INFORMATION
 %----------------------------------------------------------------------------------------
@@ -71,7 +75,7 @@
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
 
-\lettrineabstract{We present PyVallex%AV:,
+\lettrineabstract{We present PyVallex,
 a Python-based system for display, editing and processing
 of vallency lexicon data. The system consists of several components:
 a parser for the specialized lexicon format used in several vallency lexicons,
@@ -94,14 +98,10 @@ The main motivation for designing a system from scratch was that the mostly unst
 nature of the previous system made it difficult to add new functionality and maintain the
 system. The design of the system did not allow for easy integration into other tools which
 was compounded by almost non-existing documentation. On the other hand, the older system
-provided significant functionality which the new system needed to replicate.
-
-AV: On the other hand, while many of the needed functionalities could be achieved through existing Dictionary Writing Systems (WDS; TODO: nejake odkazy),
-it was a requirement that annotators could continue working as they were used to,
-in other words, using the plaintext data format and Subversion revision system, for creating new entries as well as editing new ones.
-It is expected that most annotators will learn to use selected features of PyVallex over time, especially the search/filtering functions, tabular output and editing of existing lexical units.
-Moreover, the old system of custom-made scripts will be used used alongside PyVallex for some time, until all of its functionalities are fully implemented and tested.
-
+provided significant functionality which the new system needed to replicate. An additional
+strict requirement was that annotators could continue working as they were used to,
+in other words, using the plaintext data format and Subversion revision system, for creating
+new entries as well as editing new ones.
 
 The above considerations lead to the following design goals for the new system:
 
@@ -120,7 +120,11 @@ accessing the data from other programs (either through a library interface or, e
 In particular the system should be well documented, the components should be covered by an automated
 test suite and the code style should be as uniform as possible and follow best practices.
 
-Given the above goals, we have decided to implement the system in the \emph{Python 3} programming
+\paragraph{} While many of the needed functionalities could be achieved through existing Dictionary Writing Systems
+(WDS; TODO: nejake odkazy), these systems were ruled out by the requirement that annotators be allowed
+to continue using their current workflows.
+
+Given the above, we have decided to implement the system in the \emph{Python 3} programming
 language. Its advantage over \emph{Perl} (the language of the previous system) is that it provides
 much better language support for structured programming. It is also becoming much more popular in
 the NLP community, which makes it more likely that new contributors will be able to work with the
@@ -130,6 +134,8 @@ This makes the code effectively strongly-typed. In the interest of maintainabili
 a uniform coding style through the use of a commit-hook which runs autopep (\cite{tool:autopep8})
 on the commited code.
 
+We expect that most annotators will learn to use selected features of PyVallex over time, especially the search/filtering functions, tabular output and editing of existing lexical units.
+The old system of custom-made scripts will be used used alongside PyVallex for some time, until all of its functionalities are fully implemented and tested.
 
 
 %----------------------------------------------------------------------------------------
@@ -139,11 +145,12 @@ on the commited code.
 A vallency lexicon consists of a collection of \emph{Lexemes}. A Lexeme represents a group of related
 lexical units that share the same lemma or (as in the case of Vallex, NomVallex, and other lexicons) a group of derivationally related lemmas. Each lexical unit corresponds to a single meaning of these lemmas. Each lexical unit can be annotated
 with a number linguistic properties,
-e.g. AV: zpetne lomitko pred.mezeru
+e.g. \AV{zpetne lomitko pred.mezeru}
 semantic (a gloss of the given meaning, level of abstraction,
 indication of primary and metaphorical meanings),
 syntactic (does the given LU enter syntactic structures such as passive, reflexive and reciprocal constructions? Which valency element of the given verb is referentially identical with the subject of the dependent infintive (a phenomenon called control)?
-AV:... mozna moc podrobne a zase zahodit
+\AV{mozna moc podrobne a zase zahodit}
+\JV{myslim, ze je to fajn, at je tam taky trochu lingvistiky}
 
 The data layer definition is provided in the \py{vallex.data\_structures} module and consists of the
 following classes \py{Lexicon} (representing a collection of \emph{lexemes}), \py{Lexeme} (representing
@@ -154,9 +161,7 @@ will be defined to deal with particular properties.
 
 Each of the above classes can store annotator provided textual comments (which can be used to explain
 the reasoning behind a specific annotation, mark the data element as a work in progress, etc). They can also
-store the original unparsed form (in the specialized annotator format
-AV: original plaintext
-) together with its location in the
+store the original unparsed form (in the original plaintext format) together with its location in the
 source and they all provide a method to convert the data into a JSON representable structure.
 
 %----------------------------------------------------------------------------------------
