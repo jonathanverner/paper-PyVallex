@@ -14,9 +14,6 @@
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcommand{\py}[1]{{\tt #1}}
-
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
@@ -25,6 +22,24 @@
 
 \input{structure.tex} % Specifies the document structure and loads requires packages
 
+\usepackage{textalpha} % For unicode greek letters in normal text
+\usepackage{amssymb, amsmath, amsthm, mathrsfs, enumitem, amsfonts, latexsym, bbm, stmaryrd, thmtools}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{svlinks}{rgb}{.0,0.3,0.6} %tmavě modrá
+\usepackage[bookmarks,colorlinks=true,pdfhighlight=/O,linkcolor=svlinks,urlcolor=svlinks,citecolor=svlinks,
+            pdftitle={PyVallex: A Processing System for Vallency Lexicon Data},
+            pdfauthor={Anna Vernerová, Jonathan L. Verner},
+            pdfsubject={},
+            pdfkeywords={}
+            ]{hyperref}
+\usepackage{enumitem}
+\usepackage{fouriernc}
+
+\newcommand{\py}[1]{{\tt #1}}
+\newcommand{\att}[1]{{\tt #1}}
+
 %----------------------------------------------------------------------------------------
 %	ARTICLE INFORMATION
 %----------------------------------------------------------------------------------------
@@ -32,7 +47,7 @@
 \title{PyVallex: A Processing System for Vallency Lexicon Data} % The article title
 
 \author{
-	\authorstyle{Anna Vernerová\textsuperscript{1} and Jonathan Verner\textsuperscript{2,3}} % Authors
+	\authorstyle{Anna Vernerov\'a\textsuperscript{1} and Jonathan L. Verner\textsuperscript{2,3}} % Authors
 	\newline\newline % Space before institutions
 	\textsuperscript{1}\institution{Institute of Formal and Applied Linguistics, Charles University, Prague}\\ % Institution 1
 	\textsuperscript{2}\institution{Department of Logic, Charles University, Prague}\\ % Institution 2
@@ -118,10 +133,9 @@ lexical units, each unit corresponding to a single word-meaning pair. Each lexic
 with various linguistic properties.
 
 The data layer definition is provided in the \py{vallex.data\_structures} module and consists of the
-following classes \py{Lexicon} (representing a collection of \emph{Lexemes}), \py{Lexeme} (representing
-a single Lexeme), \py{LexicalUnit} (representing a lexical unit), \py{Attrib} (representing a linguistically
-relevant property of a lexical unit). The \py{Attrib} class also has several specializations: \py{Frame}
-(representing the frame annotation), \py{Lemma} (representing the lemma annotation) and \py{SpecVal}
+following classes \py{Lexicon} (representing a collection of \emph{lexemes}), \py{Lexeme} (representing
+a single \emph{lexeme}), \py{LexicalUnit} (representing a \emph{lexical unit}), \py{Attrib} (representing a linguistically relevant property of a \emph{lexical unit}). The \py{Attrib} class also has several specializations: \py{Frame}
+(representing the \emph{frame} annotation), \py{Lemma} (representing the \emph{lemma} annotation) and \py{SpecVal}
 (representing the changes between a verb-noun derived pair). It is expected, that further sepcializations
 will be defined to deal with particular properties.
 
@@ -143,8 +157,7 @@ module and the components are mostly independent of each other.
 
 %------------------------------------------------
 \subsection{The parser}
-The parse module takes care of parsing the specialized format used by annotators when creating the lexicon
-data. The format (described in \cite{vallex}) is designed to be easily editable in any text editor and consise enough to facilitate manual creation.
+The parse module takes care of parsing the specialized format (\autoref{fig:txt-fmt}) used by annotators when creating the lexicon data. The format (described in \cite{vallex}) is designed to be easily editable in any text editor and consise enough to facilitate manual creation.
 
 \begin{figure}
 \tiny
@@ -160,12 +173,63 @@ data. The format (described in \cite{vallex}) is designed to be easily editable 
                 -recipr: impf: ACT-ORIG %berou si od sebe peníze%
                         pf: ACT-ORIG %nikdy si od sebe nevzali peníze%
 \end{verbatim}
-\caption{Sample lexical unit in the textual format}
+\caption{\label{fig:txt-fmt}Sample lexical unit in the textual format}
 \end{figure}
 
+The parser itself is split into a tokenizer function producing a stream of tokens and several
+parse methods. The methods take care of constructing the \py{Lexeme}, \py{LexicalUnit}
+and \py{Attrib} classes. It is designed in such a way that adding a specialized parser for
+a newly introduced property is just a matter of writing a single function which is given
+the body of the attribute and returns an instance of (a descendant) the \py{Attrib} class.
+To integrate the function into the parser, it is enough to decorate it with a provided
+Python decorator.
 
 %------------------------------------------------
 \subsection{Search}
+The search module provides query capabilities to the system.
+
+\paragraph{Queries} A query is a collection of conditions
+and the result of the query is a set of lexical units each of which meets all
+of the conditions of the query. Each condition consists of a \emph{selector} and a
+\emph{pattern}. For each lexical unit the \emph{selector} is passed to a \py{match\_key\_values}
+function which constructs a list of strings. A lexical unit satisfies the condition if at
+least one of the strings matches the \emph{pattern}, which is a regular expression.
+The \emph{selector} is a dot-separated list of strings. The standard implementation of the
+\py{match\_key\_values} function interprets the first element of the selector as an attribute
+name which it retrieves. It then passes the rest of the selector to the attribute's \py{match\_key\_values}
+function to construct the list of strings to be matched against. The standard implementation
+of the attribute's \py{match\_key\_values} method returns the attribute's textual representation
+if the \emph{selector} is empty, its source form if the selector is 'src' and otherwise treats
+the selector as a path through the attributes structure treated as a tre. It resolves the path and returns the
+value present in the relevant node. For example a query consisting of the single condition
+\begin{verbatim}
+    example.pf=.*od.*
+\end{verbatim}
+would match the lexical unit shown in \autoref{fig:txt-fmt} whose \att{example} attribute
+has the following structure
+\begin{verbatim}
+    {
+        'impf': [ 'brát si od někoho mzdu /
+                   peníze za práci'],
+        'pf': ['vzal si od něj peníze za
+                práci']
+    }
+\end{verbatim}
+The \emph{selector} \att{example.pf} would retrieve the \att{example} attribute and from it
+its \att{pf} node which contains the string \tt{vzal si od něj peníze za práci}. This string
+incidentally matches the regular expression \tt{.*od.*}.
+
+For discoverability purposes, each attribute has a method which returns a lists of all valid paths
+inside its structure.
+
+\paragraph{Executing queries}
+The search module contains a \py{grep} method to execute queries. It additionally contains a \py{filter}
+method which allows pruning each lexical unit from the result set so that it contains only the properties/attributes a user is interested in. Another method is provided to compute various histograms.
+which allows
+
+
+
+
 %------------------------------------------------
 \subsection{Data Validation}
 %------------------------------------------------
