@@ -242,7 +242,14 @@ The search module contains a \py{grep} method to execute queries. It additionall
 method which allows pruning each lexical unit from the result set so that it contains only the properties/attributes a user is interested in. Another method is provided to compute various histograms.
 The histogram method takes three arguments: the first argument is a collection of lexical units over which the histogram is computed. The second argument is a \emph{selector} which produces a list of strings
 from each lexical unit in the same way as is done when evaluating queries. The last argument is a
-regular expression which extracts the values to be counted from each string from the list.
+regular expression which extracts the values to be counted from each string from the list. \autoref{fig:histogram}
+shows how the UI displays the results of computing the histogram for the {\tt frame.functor} selector with
+the trivial pattern ({\tt .*}).
+\begin{figure}
+    \includegraphics[width=\hsize]{images/histogram.png}
+    \caption{\label{fig:histogram}A histogram of the frame functors}
+\end{figure}
+
 
 
 
