@@ -35,7 +35,7 @@
             pdfkeywords={}
             ]{hyperref}
 \usepackage{enumitem}
-\usepackage{fouriernc}
+\usepackage{minted}
 
 \newcommand{\py}[1]{{\tt #1}}
 \newcommand{\att}[1]{{\tt #1}}
@@ -247,19 +247,77 @@ shows how the UI displays the results of computing the histogram for the {\tt fr
 the trivial pattern ({\tt .*}).
 \begin{figure}
     \includegraphics[width=\hsize]{images/histogram.png}
-    \caption{\label{fig:histogram}A histogram of the frame functors}
+    \caption{\label{fig:histogram}The web ui showing a histogram of the frame functors}
 \end{figure}
 
-
-
-
-
 %------------------------------------------------
-\subsection{Data Validation}
-%------------------------------------------------
-\subsection{Batch processing}
+\subsection{Scripts}
+The script module (\py{vallex.scripts}) provides a framework for running simple procedures over the
+vallency lexicon data. The scripts are loaded by the framework from a configurable directory. Each
+file in this directory is a Python source file containing the definitions of the procedures. Currently
+the system recognizes five kinds of procedures: \emph{test}, \emph{transform}, \emph{compute} and \emph{map/reduce}.
+
+\paragraph{Test} The test procedures are used to implement data validation for the lexicon. Each test
+function receives a lexical unit as its argument\footnote{Actually, there are four sub-types differing in what
+argument is passed --- a collection of lexicons, a single lexicon, a single lexeme or a lexical unit; for simplicity here and also in the other types we consider only the sub-type receiving a lexical unit.}. It is expected
+to check whether the unit satisfies the test and raise an appropriate exception if it doesn't. The framework
+iterates over all lexical units passing them in turn to each test procedure and collecting the results. The
+results are saved in the in-memory representation and can then be displayed to the user (\autoref{fig:test-result})
+\begin{figure}
+    \includegraphics[width=0.8\hsize]{images/test-result.png}
+    \caption{\label{fig:test-result}The web ui showing the result of a data-validation run on a lexical unit.}
+\end{figure}
+The results are also annotated with the docstring of the test-procedure which can be used to provide human
+readable explanation of the failed result. An example data validation test is provided in \autoref{fig:data-test-code}
+\begin{figure}
+\begin{minted}{python}
+def test_lu_acc_bez_deagent(lu):
+    """
+        Slovesa, která mají v rámci akuzativ,
+        musí mít uvedeno deagent.
+    """
+    forms = sum([fe.forms
+                 for fe in lu.frame.elements],
+                [])
+    has_acc = '4' in forms or 'adj-4' in forms
+
+    if not has_acc or lu.reflexive:
+        raise TestDoesNotApply
+
+    deagent = 'diat' in lu.attribs and
+              'deagent' in lu.attribs['diat']._data
+
+    if not deagent:
+        raise TestFailed()
+\end{minted}
+\caption{\label{fig:data-test-code}An example of a data-validation procedure}
+\end{figure}
+
+\paragraph{Transform} The transform procedures can be used to implement one-time lexicon-wide changes, e.g.
+renaming an attribute. They receive a lexical unit which they can modify and return.
+
+\paragraph{Compute} The compute procedures are similar to the transform procedures, but are used to implement dynamically computed properties which are \emph{not} saved back to the lexicon on disk.
+
+\paragraph{Map/Reduce} The map/reduce procedures are used to perform more complicated analyses of the lexicon
+for which a simple search/histogram does not suffice. Each map/reduce procedure consists of a pair of functions:
+a \emph{mapper} and an (optional) \emph{reducer}. Each mapper receives a lexical unit as an argument and
+uses a framework-provided \py{emit} function to emit a collection of \py{(key, value)} pairs. The framework
+iterates over all lexical-units passing them to the mapper functions and collecting the resulting pairs. It then groups them by the \py{key} component and passes the groups to the reducer which can do further processing on them.
+A default reducer which just counts the number of values for a given key is provided by the framework and is
+used when no specialized reducer is provided by the user. Note that, although map/reduce is now connected with
+parallel processing, here all the mappers and reducers are run sequentially since the small size of the data makes
+sequential processing completely adequate. Instead, we use map/reduce as a familiar methodology for structuring
+analysis code.
+
 %------------------------------------------------
 \subsection{Output}
+
+The output module provides tools to export lexicon data in various formats. In addition to built-in JSON
+output (which is implemented in the data-layer), new formats can be defined using \cite{Jinja2} templates.
+Currently only a single txt format is provided which outputs the in-memory representation in the same
+format that the annotators use. This can be used to check the fidelity of the in-memory representation
+(by comparing it with the original source) and for normalizing the sources. In the future other formats
+may be added, e.g., XML.
 
 %----------------------------------------------------------------------------------------
 %	THE UI LAYER
