@@ -313,7 +313,7 @@ analysis code.
 \subsection{Output}
 
 The output module provides tools to export lexicon data in various formats. In addition to built-in JSON
-output (which is implemented in the data-layer), new formats can be defined using \cite{Jinja2} templates.
+output (which is implemented in the data-layer), new formats can be defined using \cite{tool:Jinja2} templates.
 Currently only a single txt format is provided which outputs the in-memory representation in the same
 format that the annotators use. This can be used to check the fidelity of the in-memory representation
 (by comparing it with the original source) and for normalizing the sources. In the future other formats
@@ -325,10 +325,44 @@ may be added, e.g., XML.
 
 \section{The UI Layer}
 
+Although the PyVallex system provides a command line UI for performing searches, computing histograms
+and running batch scripts it is expected that most of its users will prefer a nicer graphical user interface.
+We have decided to provide the GUI as a web-based interface. This has several advantages. First, it allows
+the system to be installed on a server and be accessible to users without forcing them to aquire the comparatively large datasets or requiring them to maintain the installation. Moreover, web-based technologies are very
+common and basing the UI on them considerably lowers the barrier for new contributors/maintainers. It
+is expected that even a person without a detailed knowledge of the system would be able to contribute simple modifications to the UI in a short amount of time. Finally, using a webview widget provided by the \cite{tool:Qt}
+library we can implement a simple local client based on the same code-base.
+
+\subsection{Implementation}
+The server-backend is a simple Python \cite{tool:WSGI} application written in the \cite{tool:bottle.py}
+microframework. It uses a SQLite database \cite{tool:SQLite} to store a JSON representation of the in-memory
+data\footnote{The database is used solely as a method to allow safe concurrent access to the data.} and exposes a REST-based api which is consumed by the front end. The front end is a Javascript application written using the
+\cite{tool:Vue.js} Vue framework together with the \cite{tool:Vuetify} component library to provide a familiar
+\cite{tool:polymer} Polymer-style interface.
+
+\subsection{User Features}
+
+
 \begin{figure}
-    \includegraphics[width=\hsize]{images/ui-main.png}
-    \caption{The main interface}
+    \includegraphics[width=\hsize]{images/ui-search.png}
+    \caption{\label{fig:ui-search}The search field}
 \end{figure}
+
+\begin{figure}
+    \includegraphics[width=\hsize]{images/ui-lexical-unit.png}
+    \caption{\label{fig:ui-lexical-unit}The lexical unit display}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\hsize]{images/ui-lexical-unit-src.png}
+    \caption{\label{fig:ui-lexical-unit-src}The lexical unit display (source view)}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\hsize]{images/ui-editing.png}
+    \caption{\label{fig:ui-editing}A simple editor}
+\end{figure}
+
 
 
 %----------------------------------------------------------------------------------------
