@@ -302,7 +302,7 @@ various output formats. Each of these components is implemented in a python subm
 module and the components are mostly independent of each other.
 
 %------------------------------------------------
-\subsection{The parser}
+\subsection{The parser}\label{parser}
 The parse module takes care of parsing the specialized format (\autoref{fig:txt-fmt}) used by annotators when creating the lexicon data. The format %(described in \cite{vallex})  %%AV: existuji jen popisy jeho semantiky, ale nikde neni popis primo tohoto formatu, protoze se povazuje za ciste interni
 is designed to be easily editable in any text editor and concise enough to facilitate manual creation.
 
@@ -378,7 +378,7 @@ inside its structure.
 
 \paragraph{Executing queries}
 The search module contains a \py{grep} method to execute queries. It additionally contains a \py{filter}
-method which allows pruning each lexical unit from the result set so that it contains only the properties/attributes a user is interested in. Another method is provided to compute various histograms.
+method which allows pruning each lexical unit \av[in the resulting]{from the result} \av{\emph{"from the result set" jsem pochopila jako ze se cela LU zahodi}} set so that it contains only the properties/attributes a user is interested in. Another method is provided to compute various histograms.
 The histogram method takes three arguments: the first argument is a collection of lexical units over which the histogram is computed. The second argument is a \emph{selector} which produces a list of strings
 from each lexical unit in the same way as is done when evaluating queries. The last argument is a
 regular expression which extracts the values to be counted from each string from the list. \autoref{fig:histogram}
