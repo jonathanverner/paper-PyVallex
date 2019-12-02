@@ -91,7 +91,7 @@
 %      author1@xxx.yy, author2@zzz.edu, author3@hhh.com\\
 %      \{author1, author5, author9\}@abc.org\\}
 
-\name{Anna Vernerov\'a\textsuperscript{1}, Jonathan L. Verner\textsuperscript{2,1}}
+\name{Jonathan Verner\textsuperscript{1,2}, Anna Vernerov\'a\textsuperscript{1}}
 
 \address{\textbf{1:} Charles University, Faculty of Mathematics and Physics, Institute of Formal and Applied Linguistics\\
          \textbf{2:} Charles University, Faculty of Arts, Department of Logic\\
@@ -117,7 +117,6 @@
 %----------------------------------------------------------------------------------------
 
 \abstract{
-\av{150-200 slov}
 We present PyVallex, a Python-based system for presenting, searching/filtering, editing/extending and processing
 of valency lexicon data originally available in a text-based format. The system consists of several components:
 a parser for the specific lexicon format used in several valency lexicons,
@@ -132,7 +131,7 @@ The editing functionality of the web-based interface is currently limited to edi
 but additional script-based operations on the database are also possible.
 The code is published under the open source MIT license and is also available in the form of a Python module
 for integrating into other software.
-\newline \Keywords{\av{3-5 v poradi dle preference: dictionary management, lexicographic software, electronic dictionaries, dictionary writing system, valency lexicons}}
+\newline \Keywords{dictionary management, lexicographic software, electronic dictionaries, valency lexicons}
 }
 \maketitleabstract
 
@@ -140,42 +139,10 @@ for integrating into other software.
 %----------------------------------------------------------------------------------------
 %	PREVIOUS WORK
 %----------------------------------------------------------------------------------------
-\section{When The Old Tools No Longer Suffice}
-\av{
-In the early years of this millenium,
-the valency lexicon Vallex started being developed at the Institute of Formal and Applied Linguistics in Prague
-(then Center for Computational Linguistics)
-with the aims of
-validating the existing valency theory of the Functional Generative Description and
-pursuing further syntactic research
-\cite{LopatkovaEtAl02tektogramaticky}.
-Early on, a lexicon named PDT-Vallex was forked from Vallex and used for
-maintaining consistency of the tectogrammatical annotation of the data in the
-Prague Dependency Treebank 2.0 \cite{PDT2.0,HajicHonetschlager03annotation}.
-While the PDT-Vallex was fully integrated with the tree editor and search tool TrEd%
-\footnote{\url{https://ufal.mff.cuni.cz/tred/}}
-\cite{PajasStepanek08recent}
-and its native format is now XML-based,
-the Vallex project never really moved away from the early technological solution based on a text-based format
-processed by a sequence of scripts that led to an intermediate representation as XML-data
-\cite{Zabokrtsky05valency}
-and final presentations as web-pages (with individual lexicon entries stored in individual html files)
-and a pdf/printed lexicon (produced via TeX).
-The annotators are reluctant to move away from the text-based format which they can use with a common text-editor
-(with custom syntax highlighting definition files relying on a set of markup conventions);
-this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
-On the other hand, the set of custom scripts for format conversions,
-validity checking, and custom search,
-making use of nowadays less known languages
-such as perl, awk, and xslt
-and showing traces of personal quirks
-of a number of developers who are no longer on the project,
-has, over the years, become disorganized and close to unmanageable.
-}
-\jv{
+\section{When The Old Tools No Longer Suffice}\label{sec:history}
 In the early 2000s researchers at the Institute of Formal and Applied Linguistics in Prague
 (then the Center for Computational Linguistics) started developing the valency lexicon Vallex aiming to
-validate the existing valency theory of the Functional Generative Description \cite{Sgall:1986} and to pursue
+validate the existing valency theory of the Functional Generative Description \cite{Panevova74verbal,Panevova75verbal,Panevova80formy,PanevovaSkoumalova92surface} and to pursue
 further syntactic research \cite{LopatkovaEtAl02tektogramaticky}.
 Early on, a lexicon named PDT-Vallex was forked from Vallex and used for
 maintaining consistency of the tectogrammatical annotation of the data in the
@@ -194,20 +161,22 @@ The annotators are reluctant to move away from the text-based format which they 
 this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search are not well documented and have a significant
-% maintenance cost. Additionally the scripts are written using tools/languages which are not as widely
-% popular today as they were when the project started making it hard for newer people to take part
-% in development.
-% They rely on tools like awk and xslt which
-% making use of nowadays less known languages
-% such as perl, awk, and xslt
-% and showing traces of personal quirks
-% of a number of developers who are no longer on the project,
-% has, over the years, become disorganized and close to unmanageable.
+maintenance cost. Additionally the scripts are written using tools/languages which are not as widely
+popular today as they were when the project started (\emph{perl, awk, xslt}), 
+making it hard for new team members to actively take part
+in further development.
+
+\av{
+Moreover, we have seen a sharp rise in the number of internal links between different lexical units within Vallex 
+when phenomena such as lexical-semantic alternations and light verb constructions became the central topics of our research.
+In addition to the old needs, it has now become necessary to watch out for changes in the data and make sure that the internal compatibility of the data does not become broken.
+The old pipeline contained no mechanisms that could be efficiently used for this purpose.
+This issue has become particularly pressing since Vallex now has three additional sister projects,
+all linking back to its data:
+NomVallex, a lexicon of deverbal nouns;
+RU-Vallex, a lexicon of Russian verbs;
+and PL-Vallex, a lexicon of Polish verbs.
 }
-
-% \av{\textbf{Markéta by se asi zlobila, že to píšu, jako bychom v tom měli totální chaos.
-% Zvládl bys to nějak zjemnit, ale zachovat pointu?}}
-
 
 %----------------------------------------------------------------------------------------
 %	DESIGN OF THE SYSTEM
@@ -241,7 +210,7 @@ In particular the system should be well documented, the components should be cov
 test suite and the code style should be as uniform as possible and follow best practices.
 
 \paragraph{} While many of the needed functionalities could be achieved through existing Dictionary Writing Systems
-(WDS; TODO: nejake odkazy), these systems were ruled out by the requirement that annotators be allowed
+(WDS; the concept is discussed e.g.\ in \cite{Abel12DWS}), these systems were ruled out by the requirement that annotators be allowed
 to continue using their current workflows.
 
 Given the above, we have decided to implement the system in the \emph{Python 3} programming
@@ -343,7 +312,8 @@ Python decorator.
 \subsection{Search}
 The search module provides query capabilities to the system.
 
-\paragraph{Queries} A query is a collection of conditions
+\subsubsection{Queries}\label{sec:query}
+A query is a collection of conditions
 and the result of the query is a set of lexical units each of which meets all
 of the conditions of the query. Each condition consists of a \emph{selector} and a
 \emph{pattern}. For each lexical unit the \emph{selector} is passed to a \py{match\_key\_values}
@@ -375,11 +345,20 @@ incidentally matches the regular expression {\tt .*od.*}.
 
 For discoverability purposes, each attribute has a method which returns a lists of all valid paths
 inside its structure.
+\av{Note that besides the internal structure of attributes output by the parser (Section \ref{parser}),
+selectors may also access computed properties and results of tests (Section \ref{sec:computed});
+in particular, it is possible to formulate a query for all units that failed a given test,
+e.g.\ a query of the form}
+\begin{verbatim}
+    error.acc_without_deagent=.
+\end{verbatim}
+\av{would match all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
+}
 
-\paragraph{Executing queries}
+\subsubsection{Executing queries}\label{sec:execute_query}
 The search module contains a \py{grep} method to execute queries. It additionally contains a \py{filter}
-method which allows pruning each lexical unit \av[in the resulting]{from the result} \av{\emph{"from the result set" jsem pochopila jako ze se cela LU zahodi}} set so that it contains only the properties/attributes a user is interested in. Another method is provided to compute various histograms.
-The histogram method takes three arguments: the first argument is a collection of lexical units over which the histogram is computed. The second argument is a \emph{selector} which produces a list of strings
+method which allows pruning each lexical unit in the result set so that it contains only the properties/attributes a user is interested in. Another method is provided to compute various histograms.
+The \py{histogram} method takes three arguments: the first argument is a collection of lexical units over which the histogram is computed. The second argument is a \emph{selector} which produces a list of strings
 from each lexical unit in the same way as is done when evaluating queries. The last argument is a
 regular expression which extracts the values to be counted from each string from the list. \autoref{fig:histogram}
 shows how the UI displays the results of computing the histogram for the {\tt frame.functor} selector with
@@ -408,11 +387,11 @@ results are saved in the in-memory representation and can then be displayed to t
     \caption{\label{fig:test-result}The web-based UI showing the result of a data-validation run on a lexical unit.}
 \end{figure}
 The results are also annotated with the docstring of the test-procedure which can be used to provide human
-readable explanation of the failed result. An example data validation test is provided in \autoref{fig:data-test-code}
+readable explanation of the failed result. An example data validation test is provided in \autoref{fig:data-test-code}.
 \begin{figure}
 \small
 \begin{minted}{python}
-def test_lu_acc_bez_deagent(lu):
+def test_lu_acc_without_deagent(lu):
   """
     Verbs that allow accusative form
     of one of their complementations
@@ -441,21 +420,21 @@ def test_lu_acc_bez_deagent(lu):
 \paragraph{Transform} The transform procedures can be used to implement one-time lexicon-wide changes, e.g.
 renaming an attribute. They receive a lexical unit which they can modify and return.
 
-\paragraph{Compute} The compute procedures are similar to the transform procedures, but are used to implement dynamically computed properties which are \emph{not} saved back to the lexicon on disk.
+\paragraph{Compute}\label{sec:computed} The compute procedures are similar to the transform procedures, but are used to implement dynamically computed properties which are \emph{not} saved back to the lexicon on disk.
 
 \paragraph{Map/Reduce} The map/reduce procedures are used to perform more complicated analyses of the lexicon
 for which a simple search/histogram does not suffice. Each map/reduce procedure consists of a pair of functions:
 a \emph{mapper} and an (optional) \emph{reducer}. Each mapper receives a lexical unit as an argument and
 uses a framework-provided \py{emit} function to emit a collection of \py{(key, value)} pairs. The framework
-iterates over all lexical-units passing them to the mapper functions and collecting the resulting pairs. It then groups them by the \py{key} component and passes the groups to the reducer which can do further processing\avout{ on them}\av{//which can be used for further processing}.
+iterates over all lexical-units passing them to the mapper functions and collecting the resulting pairs. It then groups them by the \py{key} component and passes the groups to the reducer which can do further processing.
 A default reducer which just counts the number of values for a given key is provided by the framework and is
-used when no specialized reducer is provided by the user. Note that, although map/reduce is now connected with
-parallel processing, here all the mappers and reducers are run sequentially since the small size of the data \avout[justifies sequential processing]{makes
-sequential processing completely adequate}. \avout[W]{Instead, w}e use map/reduce as a familiar methodology for structuring
+used when no specialized reducer is provided by the user. Note that, although map/reduce is now commonly associated with
+parallel processing, here all the mappers and reducers are run sequentially---the small size of the data does not justify
+the additional complexity of parallel processing. We use map/reduce only as a familiar paradigm for structuring
 analysis code.
 
 %------------------------------------------------
-\subsection{Output}
+\subsection{Output}\label{sec:output}
 
 The output module provides tools to export lexicon data in various formats. In addition to built-in JSON
 output (which is implemented in the data-layer), new formats can be defined using \emph{Jinja2} \cite{tool:Jinja2} templates.
@@ -483,15 +462,20 @@ we can implement a simple local client based on the same code-base.
 The server-backend is a simple Python \emph{WSGI} \cite{tool:WSGI} application written in the \emph{Bottle.py} \cite{tool:bottle.py}
 microframework. It uses an \emph{SQLite} database \cite{tool:SQLite} to store a JSON representation of the in-memory
 data\footnote{The database is used solely as a method to allow safe concurrent access to the data.} and exposes a REST-based api which is consumed by the front end. The front end is a Javascript application written using the
-\emph{Vue} framework \cite{tool:Vue.js}  together with the 
+\emph{Vue} framework \cite{tool:vue}  together with the 
 \emph{Vuetify} component library \cite{tool:Vuetify} to provide a familiar
 \emph{Polymer}-style interface \cite{tool:polymer}.
 
-\subsection{User Features}
-\subsubsection{Searching/Filtering}
-By default, all lexemes in the lexicon are displayed in the alphabetical order.
-However, it is possible to search for lexical units based on their attributes 
-(the \texttt{Attrib} class provided by the parser, \secref{parser})
+\subsection{User Features \av{\textbf{CELE NOVE}}}
+\subsubsection{Searching}
+By default, all lexemes in the lexicon are displayed in alphabetical order.
+However, the GUI provides an interface for formulating queries (Section \ref{sec:query});
+to improve user experience, all existing selectors are listed in a drop-down list (Figure \ref{fig:ui-search}).
+To clarify the meaning of selectors, a help string may be provided;
+the user may also click on the key icon next to any lexical unit
+and see a full listing of the selector--value pairs for the given unit.
+
+
 
 \begin{figure}
     \includegraphics[width=\hsize]{images/ui-search.png}
@@ -499,19 +483,51 @@ However, it is possible to search for lexical units based on their attributes
 \end{figure}
 
 \subsubsection{View modes}
-Currently, two view modes are provided:
-in the Source View mode, the complete textual representation of the give
-
-\begin{figure}
-    \includegraphics[width=\hsize]{images/ui-lexical-unit.png}
-    \caption{\label{fig:ui-lexical-unit}The display of a lexical unit}
-\end{figure}
+Currently, two view modes are provided for lexical units:
+in the Source View mode, the complete portion of the source file that corresponds to the given lexical unit is run through a simple regex-based syntax highlighter that mimics the function of the text editor known to the annotators.
+On the other hand, the Default View mode is based on a template that can access the complete output of the parser (Section \ref{parser})
+as well as computed properties not present in the source files (\ref{sec:computed})
+and the full formatting capabilities of the \emph{Vue.js} framework.
+A particularly useful feature of the Default View is the fact that linked lexical units
+(such as source verbs of deverbal nouns or translation equivalents in case of our Russian and Polish lexicons)
+can be displayed in a pop-up with a single click.
+The two views can be compared in Figures \ref{fig:ui-lexical-unit-src} and \ref{fig:ui-lexical-unit}.
 
 \begin{figure}
     \includegraphics[width=\hsize]{images/ui-lexical-unit-src.png}
-    \caption{\label{fig:ui-lexical-unit-src}The display of a lexical unit (source view)}
+    \caption{\label{fig:ui-lexical-unit-src}The display of a lexical unit (Source View)}
 \end{figure}
 
+\begin{figure}
+    \includegraphics[width=\hsize]{images/ui-lexical-unit.png}
+    \caption{\label{fig:ui-lexical-unit}The display of a lexical unit (Default View)}
+\end{figure}
+
+
+The \texttt{filter} method (Section \ref{sec:execute_query}) may be triggered from the settings menu as a selection of attributes to be displayed.
+A simple interface for constructing histograms is also available (ibid.).
+
+
+\subsubsection{Basic Editing}
+Because of the assumption that the web-based GUI will not replace the existing annotation pipeline 
+(text files stored in a Subversion repository),
+the current implementation does not provide editing functionality in the web-based interface.
+Nonetheless, a simple component for editing a single (pre-existing) lexical unit is available 
+in the local client-side \emph{Qt}-based GUI,
+so that annotators may quickly correct minor issues encountered while searching the data;
+the client reads data from the working copy of the Subversion repository.
+When the editor view is opened, 
+the system stores information about the current state of the the entry for the given lexical unit in the in-memory representation (\emph{SQLite} database)
+when the editor view is closed,
+the system first checks that the state of the entry in the database has not changed since opening the editor,
+then parses the new textual form of the lexical unit and replaces the whole unit in the in-memory representation.%
+\footnote{Actually, the \emph{SQLite} database is also regularly saved to the disc in order to avoid loss of data in case of unexpected program failures.}
+In case of an attempt to save edits on a unit that has changed in the database since the editing window was opened,
+the user is warned and no changes are stored into the database.
+Upon request, the content of database is output in the textual form back to the same place (making sure that any files changed in the mean-time are backed up;
+see Section \ref{sec:output});
+it is the users responsibility to submit the changes to Subversion,
+resolve conflicts etc.
 
 
 \begin{figure}
@@ -527,8 +543,35 @@ in the Source View mode, the complete textual representation of the give
 
 
 \section{Future work}
+\avout[Some features of our old pipeline,
+e.g.\ xml and pdf output,
+have yet to be implemented in PyVallex.
+]{Currently PyVallex is missing some features of the previous system, which we plan to
+incorporate: xml and pdf output, ...}
+It is also only available in source code form\footnote{\url{https://gitlab.com/Verner/pyvallex}} and we plan to publish it as pre-built
+package in the PyPi package repository. The client-side \av{\emph{Qt}-based} GUI is now distributed as a stand-alone
+executable file. Although this has some advantages (simplicity, easy updates), it has a significant
+performance cost---the single file is basically a self-extracting archive which must unpack itself
+every time the program is run.
+
+While the client-side \av{\emph{Qt}-based} GUI allows for basic editing, it would be nice to incorporate this into
+the web UI. This will require some form of user authentication/authorization to be implemented.
+Eventually, the editing capabilities could be extended to allow for more comprehensive
+edits (including creating new lexemes/lexical units). This would allow \av{some} annotators \avout{who are not familiar
+with the plain-text format} to use the PyVallex system as the main or only tool to create or edit 
+lexicons\av{, and external users to efficiently submit feedback on individual lexical units as well as suggest extensions of the lexicon}.
+
+\av{Finally, the modular architecture of PyVallex with database-based internal representation
+makes it an ideal tool for script-based examination of multiple revisions of the same data.
+We therefore plan to implement additional tests for guarding the internal and mutual consistency of the annotation present in all four sister-projects that use the Vallex format: Vallex, NomVallex, RU-Vallex and PL-Vallex.
+}
 
 
+
+\section{Acknowledgements}
+The research reported in this paper has been supported by the projects No.\ 18-03984S (\textit{Between Reciprocity and Reflexivity: The Case of Czech Reciprocal Constructions}) and No.\ 19-16633S (\textit{Valency of Non-verbal Predicates}) of the  Czech Science Foundation (GA{\v{C}R}) and partially also by the \textit{LINDAT/CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic (project No. LM2015071).
+
+This work has been using language resources stored and distributed by the \textit{LINDAT-CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic, project No. LM2015071.
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
