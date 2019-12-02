@@ -63,7 +63,7 @@
 
 \newcommand{\av}[1]{{\color{ansa} AV: #1}}
 \newcommand{\avout}[2][]{{\color{ansa} AV:}{\color{lightgray}\textbf{#2}} {\color{ansa} #1}}
-\newcommand{\JV}[1]{{\color{svlinks} JV: #1}}
+\newcommand{\jv}[1]{{\color{svlinks} JV: #1}}
 \newcommand{\dismiss}[1]{}
 
 
@@ -118,22 +118,21 @@
 
 \abstract{
 \av{150-200 slov}
-We present PyVallex,
-a Python-based system for \avout[presenting, searching/filtering]{display}, editing\av{/extending} and processing
-of valency lexicon data\av{originally available in a text-based format}. The system consists of several components:
-a parser for the \avout[specific]{specialized} lexicon format used in several valency lexicons,
+We present PyVallex, a Python-based system for presenting, searching/filtering, editing/extending and processing
+of valency lexicon data originally available in a text-based format. The system consists of several components:
+a parser for the specific lexicon format used in several valency lexicons,
 a data-validation framework, a regular expression based search engine,
 a map-reduce style framework for querying the lexicon data and a web-based interface integrating
-complex search and some basic editing capabilities. 
-\av{PyVallex provides most of the typical functionalities of a Dictionary Writing System (DWS),
+complex search and some basic editing capabilities.
+PyVallex provides most of the typical functionalities of a Dictionary Writing System (DWS),
 such as multiple presentation modes for the underlying lexical database,
 automatic evaluation of consistency tests,
 and a mechanism of merging updates coming from multiple sources.
 The editing functionality of the web-based interface is currently limited to edits of existing lexical entries,
 but additional script-based operations on the database are also possible.
-The code is open-sourced and s}everal of the components are provided
-as a Python package allowing for programmatic access to the data.
-\newline \Keywords{\av{3-5 v poradi dle preference: dictionary management, lexicographic software, electronic dictionaries, dictionary writing system, valency lexicons}} 
+The code is published under the open source MIT license and is also available in the form of a Python module
+for integrating into other software.
+\newline \Keywords{\av{3-5 v poradi dle preference: dictionary management, lexicographic software, electronic dictionaries, dictionary writing system, valency lexicons}}
 }
 \maketitleabstract
 
@@ -150,8 +149,8 @@ with the aims of
 validating the existing valency theory of the Functional Generative Description and
 pursuing further syntactic research
 \cite{LopatkovaEtAl02tektogramaticky}.
-Early on, a lexicon named PDT-Vallex was forked from Vallex and used for 
-maintaining consistency of the tectogrammatical annotation of the data in the 
+Early on, a lexicon named PDT-Vallex was forked from Vallex and used for
+maintaining consistency of the tectogrammatical annotation of the data in the
 Prague Dependency Treebank 2.0 \cite{PDT2.0,HajicHonetschlager03annotation}.
 While the PDT-Vallex was fully integrated with the tree editor and search tool TrEd%
 \footnote{\url{https://ufal.mff.cuni.cz/tred/}}
@@ -168,10 +167,42 @@ this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search,
 making use of nowadays less known languages
-such as perl, awk, and xslt 
-and showing traces of personal quirks 
+such as perl, awk, and xslt
+and showing traces of personal quirks
 of a number of developers who are no longer on the project,
 has, over the years, become disorganized and close to unmanageable.
+}
+\jv{
+In the early 2000s researchers at the Institute of Formal and Applied Linguistics in Prague
+(then the Center for Computational Linguistics) started developing the valency lexicon Vallex aiming to
+validate the existing valency theory of the Functional Generative Description \cite{Sgall:1986} and to pursue
+further syntactic research \cite{LopatkovaEtAl02tektogramaticky}.
+Early on, a lexicon named PDT-Vallex was forked from Vallex and used for
+maintaining consistency of the tectogrammatical annotation of the data in the
+Prague Dependency Treebank 2.0 \cite{PDT2.0,HajicHonetschlager03annotation}.
+While the PDT-Vallex was fully integrated with the tree editor and search tool TrEd%
+\footnote{\url{https://ufal.mff.cuni.cz/tred/}}
+\cite{PajasStepanek08recent}
+and its native format is now XML-based,
+the Vallex project never really moved away from the early technological solution based on a text-based format
+processed by a sequence of scripts that led to an intermediate representation as XML-data
+\cite{Zabokrtsky05valency}
+and final presentations as web-pages (with individual lexicon entries stored in individual html files)
+and a pdf/printed lexicon (produced via TeX).
+The annotators are reluctant to move away from the text-based format which they can use with a common text-editor
+(with custom syntax highlighting definition files relying on a set of markup conventions);
+this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
+On the other hand, the set of custom scripts for format conversions,
+validity checking, and custom search are not well documented and have a significant
+maintenance cost. Additionally the scripts are written using tools/languages which are not as widely
+popular today as they were when the project started making it hard for newer people to take part
+in development.
+% They rely on tools like awk and xslt which
+% making use of nowadays less known languages
+% such as perl, awk, and xslt
+% and showing traces of personal quirks
+% of a number of developers who are no longer on the project,
+% has, over the years, become disorganized and close to unmanageable.
 }
 
 \av{\textbf{Markéta by se asi zlobila, že to píšu, jako bychom v tom měli totální chaos.
@@ -197,11 +228,11 @@ The above considerations lead to the following design goals for the new system:
 into components, each with a well defined public interface (API). The components should only communicate
 with each other through this API. This allows any new functionality to modify only the
 relevant parts of the system and thus lowers the barrier for new contributors---a developer does
-not need to have precise knowledge of the whole system to add/modify functionality \avout[of]{to} a single component.
+not need to have precise knowledge of the whole system to add/modify functionality to/of a single component.
 
-\paragraph{Exten\avout[si]{da}bility}
-\avout[T]{While t}he system should provide as much as possible of the functionality
-already present in the older system, \avout[and moreover]{it should} be designed from the start to be flexible and easily
+\paragraph{Extensibility}
+The system should provide as much as possible of the functionality
+already present in the older system, and moreover be designed from the start to be flexible and easily
 extensible. In particular, it should have a well-defined data-model and provide an interface to allow
 accessing the data from other programs (either through a library interface or, e.g., a REST API).
 
@@ -234,8 +265,8 @@ The old system of custom-made scripts will be used alongside PyVallex for some t
 A valency lexicon consists of a collection of \emph{Lexemes}. A Lexeme represents a group of related
 lexical units that share the same lemma or (as in the case of Vallex, NomVallex, and other lexicons) a group of derivationally related lemmas. Each lexical unit corresponds to a single meaning of these lemmas. Each lexical unit can be annotated
 with a number linguistic properties,
-e.g.\ 
-semantic (a gloss of the given meaning, 
+e.g.\
+semantic (a gloss of the given meaning,
 indication of primary and metaphorical meanings),
 syntactic (does the given LU enter syntactic structures such as passive, reflexive and reciprocal constructions?),
 and features specific to valency lexicons
@@ -246,10 +277,10 @@ indicate which other valency complementation is referentially identical with the
 The data layer definition is provided in the \py{vallex.data\_structures} module and consists of the
 following classes:
 \py{Lexicon} (representing a collection of \emph{lexemes}), \py{Lexeme} (representing
-a single \emph{lexeme}), \py{LexicalUnit} (representing a \emph{lexical unit}, i.e.\ a single meaning), \py{Attrib} (representing a linguistically relevant property of a \emph{lexical unit}). The \py{Attrib} class also has several specializations: 
-\py{Frame} (representing the \emph{valency frame}, represented as a list of \emph{complementations}), 
+a single \emph{lexeme}), \py{LexicalUnit} (representing a \emph{lexical unit}, i.e.\ a single meaning), \py{Attrib} (representing a linguistically relevant property of a \emph{lexical unit}). The \py{Attrib} class also has several specializations:
+\py{Frame} (representing the \emph{valency frame}, represented as a list of \emph{complementations}),
 \py{Lemma} (representing the \emph{lemma} or set of lemmas), and
-\py{SpecVal} (representing the changes between the valency of two related units, 
+\py{SpecVal} (representing the changes between the valency of two related units,
 e.g.\ a verb and a deverbal noun or a verb and its translation to another language).
 It is expected that further specializations
 will be defined to deal with particular properties.
@@ -282,7 +313,7 @@ is designed to be easily editable in any text editor and concise enough to facil
   ~ impf: brát (si) pf: vzít (si)
   + ACT(1;obl) PAT(4;obl) ORIG(od+2;opt)
     LOC(;typ) DIR1(;typ) RCMP(za+4;typ)
-  -synon: impf: přijímat; získávat 
+  -synon: impf: přijímat; získávat
           pf: přijmout; získat
   -example: impf: brát si od někoho mzdu
      pf: vzal si od něj peníze za práci
@@ -363,7 +394,7 @@ the trivial pattern ({\tt .*}),
 \subsection{Scripts}
 The script module (\py{vallex.scripts}) provides a framework for running simple procedures over the
 valency lexicon data. The scripts are loaded by the framework from a configurable directory. Each
-file in this directory is a Python source file containing the definitions of the procedures. 
+file in this directory is a Python source file containing the definitions of the procedures.
 The system currently recognizes five kinds of procedures: \emph{test}, \emph{transform}, \emph{compute} and \emph{map/reduce}.
 
 \paragraph{Test} The test procedures are used to implement data validation for the lexicon. Each test
