@@ -127,7 +127,7 @@ PyVallex provides most of the typical functionalities of a Dictionary Writing Sy
 such as multiple presentation modes for the underlying lexical database,
 automatic evaluation of consistency tests,
 and a mechanism of merging updates coming from multiple sources.
-The editing functionality of the web-based interface is currently limited to edits of existing lexical entries,
+The editing functionality is currently limited to the client-side interface and edits of existing lexical entries,
 but additional script-based operations on the database are also possible.
 The code is published under the open source MIT license and is also available in the form of a Python module
 for integrating into other software.
@@ -161,7 +161,7 @@ The annotators are reluctant to move away from the text-based format which they 
 this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search are not well documented and have a significant
-maintenance cost. Additionally the scripts are written using tools/languages which are not as widely
+maintenance cost.The scripts are written using tools/languages which are not as widely
 popular today as they were when the project started (\emph{perl, awk, xslt}),
 making it hard for new team members to actively take part in further development.
 This is particularly problematic when need for a significant new functionality arises. A case in point
@@ -458,7 +458,7 @@ data\footnote{The database is used solely as a method to allow safe concurrent a
 \emph{Vuetify} component library \cite{tool:Vuetify} to provide a familiar
 \emph{Polymer}-style interface \cite{tool:polymer}.
 
-\subsection{User Features \av{\textbf{CELE NOVE}}}
+\subsection{User Features}
 \subsubsection{Searching}
 By default, all lexemes in the lexicon are displayed in alphabetical order.
 However, the GUI provides an interface for formulating queries (Section \ref{sec:query});
@@ -508,11 +508,11 @@ Nonetheless, a simple component for editing a single (pre-existing) lexical unit
 in the local client-side \emph{Qt}-based GUI,
 so that annotators may quickly correct minor issues encountered while searching the data;
 the client initially reads data from the working copy of the Subversion repository and stores a JSON
-representation of this data in a \emph{SQLite} database for safe concurrent access.
-The user can open an editor view (see \autoref{fig:ui-editing}) and do some simple edits. When the editor
-view is closed, the system first checks that the state of the entry in the database has not changed since opening the editor, then parses the new textual form of the lexical unit and replaces the whole unit in the database
+representation of this data in an \emph{SQLite} database for safe concurrent access.
+The user can open an editor view (see \autoref{fig:ui-editing}) and do some edits. When the editor
+view is closed, the system first checks that the state of the entry in the database has not changed since opening the editor, then parses the new textual form of the lexical unit and replaces the whole unit in the database,
 also updating its in-memory representation. In case the unit has changed since the editing window was opened,
-the user is warned and no changes are stored. Upon request, the contents of the \emph{SQLite} database can be output in the textual form back to the subversion repository the data was originally read from (making sure that any files changed in the mean-time are backed up; see Section \ref{sec:output}); it is the users' responsibility to commit the changes, resolve conflicts etc.
+the user is warned and no changes are stored. Upon request, the contents of the \emph{SQLite} database can be output in the textual form back to the subversion repository the data was originally read from (making sure that any files changed in the meantime are backed up; see Section \ref{sec:output}); it is the users' responsibility to commit the changes, resolve conflicts etc.
 
 
 \begin{figure}
@@ -553,7 +553,7 @@ We therefore plan to implement additional tests for guarding the internal and mu
 \section{Acknowledgements}
 The research reported in this paper has been supported by the projects No.\ 18-03984S (\textit{Between Reciprocity and Reflexivity: The Case of Czech Reciprocal Constructions}) and No.\ 19-16633S (\textit{Valency of Non-verbal Predicates}) of the  Czech Science Foundation (GA{\v{C}R}) and partially also by the \textit{LINDAT/CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic (project No. LM2015071).
 
-The first author was also supported by Charles University Research Centre program No. UNCE/SCI/022 and by the Progres grant Q14. Krize racionality a modernı́ myšlenı́.
+The first author was also supported by Charles University Research Centre program No.\ UNCE/SCI/022 and by the Progres grant Q14. Krize racionality a {modern\'\i} my\v{s}len\'\i.
 
 This work has been using language resources stored and distributed by the \textit{LINDAT-CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic, project No. LM2015071.
 
