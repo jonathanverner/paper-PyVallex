@@ -162,21 +162,13 @@ this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search are not well documented and have a significant
 maintenance cost. Additionally the scripts are written using tools/languages which are not as widely
-popular today as they were when the project started (\emph{perl, awk, xslt}), 
-making it hard for new team members to actively take part
-in further development.
-
-\av{
-Moreover, we have seen a sharp rise in the number of internal links between different lexical units within Vallex 
-when phenomena such as lexical-semantic alternations and light verb constructions became the central topics of our research.
-In addition to the old needs, it has now become necessary to watch out for changes in the data and make sure that the internal compatibility of the data does not become broken.
-The old pipeline contained no mechanisms that could be efficiently used for this purpose.
-This issue has become particularly pressing since Vallex now has three additional sister projects,
-all linking back to its data:
-NomVallex, a lexicon of deverbal nouns;
-RU-Vallex, a lexicon of Russian verbs;
-and PL-Vallex, a lexicon of Polish verbs.
-}
+popular today as they were when the project started (\emph{perl, awk, xslt}),
+making it hard for new team members to actively take part in further development.
+This is particularly problematic when need for a significant new functionality arises. A case in point
+is the ability to validate link-type attributes for which the old pipeline has no efficient mechanism.
+In recent years we have seen a sharp rise in the number of internal links between different lexical units within Vallex  when phenomena such as lexical-semantic alternations and light verb constructions became the central topics of our research. It has now become necessary to monitor changes in the data and check that they do not break the links or produce inconsistencies. This validation requirement now also extends to cross-lexicon links
+since Vallex now has three additional sister projects, all linking back to its data: NomVallex, a lexicon of deverbal nouns; RU-Vallex, a lexicon of Russian verbs; and PL-Vallex, a lexicon of Polish verbs. Integrating such
+cross-lexicon link validation into the old pipeline seems impossible.
 
 %----------------------------------------------------------------------------------------
 %	DESIGN OF THE SYSTEM
@@ -345,15 +337,15 @@ incidentally matches the regular expression {\tt .*od.*}.
 
 For discoverability purposes, each attribute has a method which returns a lists of all valid paths
 inside its structure.
-\av{Note that besides the internal structure of attributes output by the parser (Section \ref{parser}),
+Note that besides the internal structure of attributes output by the parser (Section \ref{parser}),
 selectors may also access computed properties and results of tests (Section \ref{sec:computed});
 in particular, it is possible to formulate a query for all units that failed a given test,
-e.g.\ a query of the form}
+e.g.\ a query of the form
 \begin{verbatim}
     error.acc_without_deagent=.
 \end{verbatim}
-\av{would match all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
-}
+would match all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
+
 
 \subsubsection{Executing queries}\label{sec:execute_query}
 The search module contains a \py{grep} method to execute queries. It additionally contains a \py{filter}
@@ -462,7 +454,7 @@ we can implement a simple local client based on the same code-base.
 The server-backend is a simple Python \emph{WSGI} \cite{tool:WSGI} application written in the \emph{Bottle.py} \cite{tool:bottle.py}
 microframework. It uses an \emph{SQLite} database \cite{tool:SQLite} to store a JSON representation of the in-memory
 data\footnote{The database is used solely as a method to allow safe concurrent access to the data.} and exposes a REST-based api which is consumed by the front end. The front end is a Javascript application written using the
-\emph{Vue} framework \cite{tool:vue}  together with the 
+\emph{Vue} framework \cite{tool:vue}  together with the
 \emph{Vuetify} component library \cite{tool:Vuetify} to provide a familiar
 \emph{Polymer}-style interface \cite{tool:polymer}.
 
@@ -505,29 +497,22 @@ The two views can be compared in Figures \ref{fig:ui-lexical-unit-src} and \ref{
 
 
 The \texttt{filter} method (Section \ref{sec:execute_query}) may be triggered from the settings menu as a selection of attributes to be displayed.
-A simple interface for constructing histograms is also available (ibid.).
+A simple interface for showing various histograms is also available (ibid.).
 
 
 \subsubsection{Basic Editing}
-Because of the assumption that the web-based GUI will not replace the existing annotation pipeline 
+Because of the assumption that the web-based GUI will not replace the existing annotation pipeline
 (text files stored in a Subversion repository),
 the current implementation does not provide editing functionality in the web-based interface.
-Nonetheless, a simple component for editing a single (pre-existing) lexical unit is available 
+Nonetheless, a simple component for editing a single (pre-existing) lexical unit is available
 in the local client-side \emph{Qt}-based GUI,
 so that annotators may quickly correct minor issues encountered while searching the data;
-the client reads data from the working copy of the Subversion repository.
-When the editor view is opened, 
-the system stores information about the current state of the the entry for the given lexical unit in the in-memory representation (\emph{SQLite} database)
-when the editor view is closed,
-the system first checks that the state of the entry in the database has not changed since opening the editor,
-then parses the new textual form of the lexical unit and replaces the whole unit in the in-memory representation.%
-\footnote{Actually, the \emph{SQLite} database is also regularly saved to the disc in order to avoid loss of data in case of unexpected program failures.}
-In case of an attempt to save edits on a unit that has changed in the database since the editing window was opened,
-the user is warned and no changes are stored into the database.
-Upon request, the content of database is output in the textual form back to the same place (making sure that any files changed in the mean-time are backed up;
-see Section \ref{sec:output});
-it is the users responsibility to submit the changes to Subversion,
-resolve conflicts etc.
+the client initially reads data from the working copy of the Subversion repository and stores a JSON
+representation of this data in a \emph{SQLite} database for safe concurrent access.
+The user can open an editor view (see \autoref{fig:ui-editing}) and do some simple edits. When the editor
+view is closed, the system first checks that the state of the entry in the database has not changed since opening the editor, then parses the new textual form of the lexical unit and replaces the whole unit in the database
+also updating its in-memory representation. In case the unit has changed since the editing window was opened,
+the user is warned and no changes are stored. Upon request, the contents of the \emph{SQLite} database can be output in the textual form back to the subversion repository the data was originally read from (making sure that any files changed in the mean-time are backed up; see Section \ref{sec:output}); it is the users' responsibility to commit the changes, resolve conflicts etc.
 
 
 \begin{figure}
@@ -543,33 +528,32 @@ resolve conflicts etc.
 
 
 \section{Future work}
-\avout[Some features of our old pipeline,
+Some features of our old pipeline,
 e.g.\ xml and pdf output,
 have yet to be implemented in PyVallex.
-]{Currently PyVallex is missing some features of the previous system, which we plan to
-incorporate: xml and pdf output, ...}
 It is also only available in source code form\footnote{\url{https://gitlab.com/Verner/pyvallex}} and we plan to publish it as pre-built
-package in the PyPi package repository. The client-side \av{\emph{Qt}-based} GUI is now distributed as a stand-alone
+package in the PyPi package repository. The client-side \emph{Qt}-based GUI is now distributed as a stand-alone
 executable file. Although this has some advantages (simplicity, easy updates), it has a significant
 performance cost---the single file is basically a self-extracting archive which must unpack itself
 every time the program is run.
 
-While the client-side \av{\emph{Qt}-based} GUI allows for basic editing, it would be nice to incorporate this into
+While the client-side \emph{Qt}-based GUI allows for basic editing, it would be nice to incorporate this into
 the web UI. This will require some form of user authentication/authorization to be implemented.
 Eventually, the editing capabilities could be extended to allow for more comprehensive
-edits (including creating new lexemes/lexical units). This would allow \av{some} annotators \avout{who are not familiar
-with the plain-text format} to use the PyVallex system as the main or only tool to create or edit 
-lexicons\av{, and external users to efficiently submit feedback on individual lexical units as well as suggest extensions of the lexicon}.
+edits (including creating new lexemes/lexical units). This would allow some annotators
+to use the PyVallex system as the main or only tool to create or edit
+lexicons, and external users to efficiently submit feedback on individual lexical units as well as suggest extensions of the lexicon.
 
-\av{Finally, the modular architecture of PyVallex with database-based internal representation
-makes it an ideal tool for script-based examination of multiple revisions of the same data.
+Finally, the modular architecture of PyVallex which allows programmatic access to the data in a structured
+way makes it an ideal tool for script-based examination of multiple revisions of the same data.
 We therefore plan to implement additional tests for guarding the internal and mutual consistency of the annotation present in all four sister-projects that use the Vallex format: Vallex, NomVallex, RU-Vallex and PL-Vallex.
-}
 
 
 
 \section{Acknowledgements}
 The research reported in this paper has been supported by the projects No.\ 18-03984S (\textit{Between Reciprocity and Reflexivity: The Case of Czech Reciprocal Constructions}) and No.\ 19-16633S (\textit{Valency of Non-verbal Predicates}) of the  Czech Science Foundation (GA{\v{C}R}) and partially also by the \textit{LINDAT/CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic (project No. LM2015071).
+
+The first author was also supported by Charles University Research Centre program No. UNCE/SCI/022 and by the Progres grant Q14. Krize racionality a modernı́ myšlenı́.
 
 This work has been using language resources stored and distributed by the \textit{LINDAT-CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic, project No. LM2015071.
 
