@@ -249,9 +249,9 @@ language. Its advantage over \emph{Perl} (the main language of the previous syst
 much better language support for structured programming. It is also becoming much more popular in
 the NLP community, which makes it more likely that new contributors will be able to work with the
 code. Although Python (as is the case also for Perl) is a weakly typed language, we have opted
-to enforce the use of type hints via the mypy static type checker \cite{tool:mypy} run before every commit.
+to enforce the use of type hints via the \emph{mypy} static type checker \cite{tool:mypy} run before every commit.
 This makes the code effectively strongly-typed. In the interest of maintainability, we also enforce
-a uniform coding style through the use of a commit-hook which runs autopep \cite{tool:autopep8}
+a uniform coding style through the use of a commit-hook which runs \emph{autopep} \cite{tool:autopep8}
 on the commited code.
 
 We expect that most annotators will learn to use selected features of PyVallex over time, especially the search/filtering functions, tabular output and editing of existing lexical units.
@@ -399,8 +399,9 @@ The system currently recognizes five kinds of procedures: \emph{test}, \emph{tra
 
 \paragraph{Test} The test procedures are used to implement data validation for the lexicon. Each test
 function receives a lexical unit as its argument.\footnote{Actually, there are four sub-types differing in what
-argument is passed --- a collection of lexicons, a single lexicon, a single lexeme or a lexical unit; for simplicity here and also in \av{the paragraphs dedicated to} other types of procedures we discuss only the sub-type receiving a lexical unit.} It is expected
-to check whether the unit satisfies the test and raise an appropriate exception if it doesn't. The framework
+argument is passed --- a collection of lexicons, a single lexicon, a single lexeme or a lexical unit; for simplicity here and also in \av{the paragraphs dedicated to} other types of procedures we discuss only the sub-type receiving a lexical unit.} 
+It \avout{is expected
+to} check\av{s} whether the unit satisfies the test and raise\av{s} an appropriate exception if it doesn't. The framework
 iterates over all lexical units passing them in turn to each test procedure and collecting the results. The
 results are saved in the in-memory representation and can then be displayed to the user (\autoref{fig:test-result})
 \begin{figure}
@@ -410,25 +411,30 @@ results are saved in the in-memory representation and can then be displayed to t
 The results are also annotated with the docstring of the test-procedure which can be used to provide human
 readable explanation of the failed result. An example data validation test is provided in \autoref{fig:data-test-code}
 \begin{figure}
+\small
 \begin{minted}{python}
 def test_lu_acc_bez_deagent(lu):
-    """
-        Slovesa, která mají v rámci akuzativ,
-        musí mít uvedeno deagent.
-    """
-    forms = sum([fe.forms
-                 for fe in lu.frame.elements],
-                [])
-    has_acc = '4' in forms or 'adj-4' in forms
+  """
+    Verbs that allow accusative form
+    of one of their complementations
+    must also allow the deagentive
+    diathesis.
+  """
+  forms = sum(
+     [fe.forms for fe in lu.frame.elements],
+     []
+  )
+  has_acc = '4' in forms or
+              'adj-4' in forms
 
-    if not has_acc or lu.reflexive:
-        raise TestDoesNotApply
+  if not has_acc or lu.reflexive:
+    raise TestDoesNotApply
 
-    deagent = 'diat' in lu.attribs and
-              'deagent' in lu.attribs['diat']._data
+  deagent = 'diat' in lu.attribs and
+      'deagent' in lu.attribs['diat']._data
 
-    if not deagent:
-        raise TestFailed()
+  if not deagent:
+      raise TestFailed()
 \end{minted}
 \caption{\label{fig:data-test-code}An example of a data-validation procedure}
 \end{figure}
@@ -442,18 +448,18 @@ renaming an attribute. They receive a lexical unit which they can modify and ret
 for which a simple search/histogram does not suffice. Each map/reduce procedure consists of a pair of functions:
 a \emph{mapper} and an (optional) \emph{reducer}. Each mapper receives a lexical unit as an argument and
 uses a framework-provided \py{emit} function to emit a collection of \py{(key, value)} pairs. The framework
-iterates over all lexical-units passing them to the mapper functions and collecting the resulting pairs. It then groups them by the \py{key} component and passes the groups to the reducer which can do further processing on them.
+iterates over all lexical-units passing them to the mapper functions and collecting the resulting pairs. It then groups them by the \py{key} component and passes the groups to the reducer which can do further processing\avout{ on them}\av{//which can be used for further processing}.
 A default reducer which just counts the number of values for a given key is provided by the framework and is
 used when no specialized reducer is provided by the user. Note that, although map/reduce is now connected with
-parallel processing, here all the mappers and reducers are run sequentially since the small size of the data makes
-sequential processing completely adequate. Instead, we use map/reduce as a familiar methodology for structuring
+parallel processing, here all the mappers and reducers are run sequentially since the small size of the data \avout[justifies sequential processing]{makes
+sequential processing completely adequate}. \avout[W]{Instead, w}e use map/reduce as a familiar methodology for structuring
 analysis code.
 
 %------------------------------------------------
 \subsection{Output}
 
 The output module provides tools to export lexicon data in various formats. In addition to built-in JSON
-output (which is implemented in the data-layer), new formats can be defined using \cite{tool:Jinja2} templates.
+output (which is implemented in the data-layer), new formats can be defined using \emph{Jinja2} \cite{tool:Jinja2} templates.
 Currently only a single txt format is provided which outputs the in-memory representation in the same
 format that the annotators use. This can be used to check the fidelity of the in-memory representation
 (by comparing it with the original source) and for normalizing the sources. In the future other formats
