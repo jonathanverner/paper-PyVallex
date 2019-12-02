@@ -194,9 +194,9 @@ The annotators are reluctant to move away from the text-based format which they 
 this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search are not well documented and have a significant
-maintenance cost. Additionally the scripts are written using tools/languages which are not as widely
-popular today as they were when the project started making it hard for newer people to take part
-in development.
+% maintenance cost. Additionally the scripts are written using tools/languages which are not as widely
+% popular today as they were when the project started making it hard for newer people to take part
+% in development.
 % They rely on tools like awk and xslt which
 % making use of nowadays less known languages
 % such as perl, awk, and xslt
@@ -205,15 +205,15 @@ in development.
 % has, over the years, become disorganized and close to unmanageable.
 }
 
-\av{\textbf{Markéta by se asi zlobila, že to píšu, jako bychom v tom měli totální chaos.
-Zvládl bys to nějak zjemnit, ale zachovat pointu?}}
+% \av{\textbf{Markéta by se asi zlobila, že to píšu, jako bychom v tom měli totální chaos.
+% Zvládl bys to nějak zjemnit, ale zachovat pointu?}}
 
 
 %----------------------------------------------------------------------------------------
 %	DESIGN OF THE SYSTEM
 %----------------------------------------------------------------------------------------
 \section{Motivation \& Design}
-The main motivation for designing a system from scratch was that the mostly unstructured
+As noted above, the main motivation for designing a system from scratch was that the mostly unstructured
 nature of the previous system made it difficult to add new functionality and maintain the
 system. The design of the system did not allow for easy integration into other tools which
 was compounded by almost non-existing documentation. On the other hand, the older system
@@ -288,7 +288,7 @@ will be defined to deal with particular properties.
 Each of the above classes can store textual comments (which can be used to explain
 the reasoning behind a specific annotation, mark the data element as work in progress, etc). They can also
 store the original unparsed form (in the original text-based format) together with its location in the
-source files and they all provide a method to convert the data into a JSON \avout{representable} structure.
+source files and they all provide a method to convert the data into a JSON representable structure.
 
 %----------------------------------------------------------------------------------------
 %	CORE COMPONENTS
@@ -341,7 +341,7 @@ Python decorator.
 
 %------------------------------------------------
 \subsection{Search}
-The search module provides query capabilities \avout[of]{to} the system.
+The search module provides query capabilities to the system.
 
 \paragraph{Queries} A query is a collection of conditions
 and the result of the query is a set of lexical units each of which meets all
@@ -382,12 +382,11 @@ method which allows pruning each lexical unit from the result set so that it con
 The histogram method takes three arguments: the first argument is a collection of lexical units over which the histogram is computed. The second argument is a \emph{selector} which produces a list of strings
 from each lexical unit in the same way as is done when evaluating queries. The last argument is a
 regular expression which extracts the values to be counted from each string from the list. \autoref{fig:histogram}
-shows \avout{how the UI displays} the results of computing the histogram for the {\tt frame.functor} selector with
-the trivial pattern ({\tt .*}),
-\av{displayed in the web-based UI}.
+shows how the UI displays the results of computing the histogram for the {\tt frame.functor} selector with
+the trivial pattern ({\tt .*}).
 \begin{figure}
     \includegraphics[width=\hsize]{images/histogram.png}
-    \caption{\label{fig:histogram}\textbf{Nahradit všude v caption:} The web\avout[-based UI]{ ui} showing a histogram of the frame functors}
+    \caption{\label{fig:histogram}The web-based UI showing a histogram of the frame functors}
 \end{figure}
 
 %------------------------------------------------
@@ -399,13 +398,14 @@ The system currently recognizes five kinds of procedures: \emph{test}, \emph{tra
 
 \paragraph{Test} The test procedures are used to implement data validation for the lexicon. Each test
 function receives a lexical unit as its argument.\footnote{Actually, there are four sub-types differing in what
-argument is passed --- a collection of lexicons, a single lexicon, a single lexeme or a lexical unit; for simplicity here and also in \av{the paragraphs dedicated to} other types of procedures we discuss only the sub-type receiving a lexical unit.} It is expected
-to check whether the unit satisfies the test and raise an appropriate exception if it doesn't. The framework
+argument is passed --- a collection of lexicons, a single lexicon, a single lexeme or a lexical unit;
+for simplicity here and also in the paragraphs dedicated to other types of procedures we discuss only the sub-type receiving a lexical unit.}
+It is expected to check whether the unit satisfies the test and raise an appropriate exception if it doesn't. The framework
 iterates over all lexical units passing them in turn to each test procedure and collecting the results. The
 results are saved in the in-memory representation and can then be displayed to the user (\autoref{fig:test-result})
 \begin{figure}
     \includegraphics[width=0.8\hsize]{images/test-result.png}
-    \caption{\label{fig:test-result}The web ui showing the result of \avout{a} data-validation run on a lexical unit.}
+    \caption{\label{fig:test-result}The web-based UI showing the result of a data-validation run on a lexical unit.}
 \end{figure}
 The results are also annotated with the docstring of the test-procedure which can be used to provide human
 readable explanation of the failed result. An example data validation test is provided in \autoref{fig:data-test-code}
