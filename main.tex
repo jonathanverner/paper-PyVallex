@@ -475,33 +475,37 @@ and running batch scripts, it is expected that most of its users will prefer a n
 We have decided to provide the GUI as a web-based interface. This has several advantages. First, it allows
 the system to be installed on a server and be accessible to users without forcing them to aquire the comparatively large datasets or requiring them to maintain the installation. Moreover, web-based technologies are very
 common and basing the UI on them considerably lowers the barrier for new contributors/maintainers. It
-is expected that even a person without a detailed knowledge of the system would be able to contribute simple modifications to the UI in a short amount of time. Finally, using a webview widget provided by the \cite{tool:Qt}
-library we can implement a simple local client based on the same code-base.
+is expected that even a person without a detailed knowledge of the system would be able to contribute simple modifications to the UI in a short amount of time. Finally, using a webview widget provided by the
+\emph{Qt library} \cite{tool:Qt},
+we can implement a simple local client based on the same code-base.
 
 \subsection{Implementation}
-The server-backend is a simple Python \cite{tool:WSGI} application written in the \cite{tool:bottle.py}
-microframework. It uses a SQLite database \cite{tool:SQLite} to store a JSON representation of the in-memory
+The server-backend is a simple Python \emph{WSGI} \cite{tool:WSGI} application written in the \emph{Bottle.py} \cite{tool:bottle.py}
+microframework. It uses an \emph{SQLite} database \cite{tool:SQLite} to store a JSON representation of the in-memory
 data\footnote{The database is used solely as a method to allow safe concurrent access to the data.} and exposes a REST-based api which is consumed by the front end. The front end is a Javascript application written using the
-\cite{tool:Vue.js} Vue framework together with the \cite{tool:Vuetify} component library to provide a familiar
-\cite{tool:polymer} Polymer-style interface.
+\emph{Vue} framework \cite{tool:Vue.js}  together with the 
+\emph{Vuetify} component library \cite{tool:Vuetify} to provide a familiar
+\emph{Polymer}-style interface \cite{tool:polymer}.
 
 \subsection{User Features}
+\subsubsection{View modes}
+Currently, two view modes are provided:
+the default view 
+\begin{figure}
+    \includegraphics[width=\hsize]{images/ui-lexical-unit.png}
+    \caption{\label{fig:ui-lexical-unit}The display of a lexical unit}
+\end{figure}
 
+\begin{figure}
+    \includegraphics[width=\hsize]{images/ui-lexical-unit-src.png}
+    \caption{\label{fig:ui-lexical-unit-src}The display of a lexical unit (source view)}
+\end{figure}
 
 \begin{figure}
     \includegraphics[width=\hsize]{images/ui-search.png}
     \caption{\label{fig:ui-search}The search field}
 \end{figure}
 
-\begin{figure}
-    \includegraphics[width=\hsize]{images/ui-lexical-unit.png}
-    \caption{\label{fig:ui-lexical-unit}The lexical unit display}
-\end{figure}
-
-\begin{figure}
-    \includegraphics[width=\hsize]{images/ui-lexical-unit-src.png}
-    \caption{\label{fig:ui-lexical-unit-src}The lexical unit display (source view)}
-\end{figure}
 
 \begin{figure}
     \includegraphics[width=\hsize]{images/ui-editing.png}
