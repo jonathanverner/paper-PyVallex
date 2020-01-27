@@ -397,7 +397,7 @@ def test_lu_acc_without_deagent(lu):
   has_acc = '4' in forms or
               'adj-4' in forms
 
-  if not has_acc or lu.reflexive:
+  if not has_acc or lu.isReflexverb:
     raise TestDoesNotApply
 
   deagent = 'diat' in lu.attribs and
