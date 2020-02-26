@@ -433,7 +433,8 @@ output (which is implemented in the data-layer), new formats can be defined usin
 Currently only a single txt format is provided which outputs the in-memory representation in the same
 format that the annotators use. This can be used to check the fidelity of the in-memory representation
 (by comparing it with the original source) and for normalizing the sources. In the future other formats
-may be added, e.g., XML.
+may be added, e.g., 
+one of the XML-based internationally recognized formats such as XML:TEI or the RDF/XML serialization of the OntoLex-Lemon model.
 
 %----------------------------------------------------------------------------------------
 %	THE UI LAYER
@@ -525,8 +526,6 @@ the user is warned and no changes are stored. Upon request, the contents of the 
 %----------------------------------------------------------------------------------------
 %	FUTURE WORK
 %----------------------------------------------------------------------------------------
-
-
 \section{Future work}
 Some features of our old pipeline,
 e.g.\ xml and pdf output,
@@ -548,6 +547,28 @@ Finally, the modular architecture of PyVallex which allows programmatic access t
 way makes it an ideal tool for script-based examination of multiple revisions of the same data.
 We therefore plan to implement additional tests for guarding the internal and mutual consistency of the annotation present in all four sister-projects that use the Vallex format: Vallex, NomVallex, RU-Vallex and PL-Vallex.
 
+\subsection{Extending PyVallex for other projects}
+A recent survey of lexicographic practices in Europe  has found that most projects use an in-house DWS rather than an off-the-shelf solution
+\cite{KallasEtAl19lexicographic}.
+Even though PyVallex is not primarily a DWS, it can be viewed as just another addition towards this trend.
+One of the arguments for an in-house solution was the fact that the lexicographers on our teams are happy with the current setup:
+the main source of truth about the lexicon data are files in the text-based Vallex format,
+shared between annotators in a Subversion repository.
+In contrast to XML-based formats such as XML:TEI \cite{XMLTEI2020}
+and the RDF/XML serialization of the OntoLex-Lemon model \cite{BosqueGilGracia19OntoLex},
+our format is compact and practical for direct and daily use by humans;
+moreover, it is easy to inspect changes in the data with general-purpose diff tools.
+This means that in order to build upon pre-existing software for the presentation, querying and editing of our lexicographic data,
+we would have to write custom conversion scripts to and from the native format of those tools,
+and create a pipeline allowing for continuous integration of changes coming from the Subversion.
+However, once we have a parser for our format,
+it is natural to use the resulting internal representation of the data as the input for queries, scripts, and output functions.
+In short, the PyVallex framework is a result of the wish to enable developers to write a parser and then reuse the resulting representation for multiple purposes.
+Although most of the current development of PyVallex concentrates on the Vallex-specific functions,
+the general framework is ready to work with other data models as well.
+We thank the anonymous referees for pointing out that as a first step towards adoption of PyVallex by other projects,
+we could implement parsers and output functions for internationally recognized lexicon exchange formats.
+In fact, we could go even further and make sure that the internal representation of lexicon data in PyVallex reflects the OntoLex-Lemon model.
 
 
 \section{Acknowledgements}
