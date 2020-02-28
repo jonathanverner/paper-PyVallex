@@ -147,28 +147,30 @@ further syntactic research \cite{LopatkovaEtAl02tektogramaticky}.
 Early on, a lexicon named PDT-Vallex was forked from Vallex and used for
 maintaining consistency of the tectogrammatical annotation of the data in the
 Prague Dependency Treebank 2.0 \cite{PDT2.0,HajicHonetschlager03annotation}.
-While the PDT-Vallex was fully integrated with the tree editor and search tool TrEd%
+The PDT-Vallex was fully integrated with the tree editor and search tool TrEd%
 \footnote{\url{https://ufal.mff.cuni.cz/tred/}}
 \cite{PajasStepanek08recent}
-and its native format is now XML-based,
-the Vallex project never really moved away from the early technological solution based on a text-based format
-processed by a sequence of scripts that led to an intermediate representation as XML-data
+and its native format is now XML-based.
+In contrast, 
+the Vallex project still uses the original pipeline based on a text-based format
+processed by a sequence of scripts that lead to an intermediate representation as XML-data
 \cite{Zabokrtsky05valency}
-and final presentations as web-pages (with individual lexicon entries stored in individual html files)
+and final presentations as web-pages (with individual lexicon entries stored in html files)
 and a pdf/printed lexicon (produced via TeX).
 The annotators are reluctant to move away from the text-based format which they can use with a common text-editor
 (with custom syntax highlighting definition files relying on a set of markup conventions);
 this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search are not well documented and have a significant
-maintenance cost.The scripts are written using tools/languages which are not as widely
+maintenance cost.
+The scripts are written using tools/languages which are not as widely
 popular today as they were when the project started (\emph{perl, awk, xslt}),
 making it hard for new team members to actively take part in further development.
 This is particularly problematic when need for a significant new functionality arises. A case in point
 is the ability to validate link-type attributes for which the old pipeline has no efficient mechanism.
 In recent years we have seen a sharp rise in the number of internal links between different lexical units within Vallex  when phenomena such as lexical-semantic alternations and light verb constructions became the central topics of our research. It has now become necessary to monitor changes in the data and check that they do not break the links or produce inconsistencies. This validation requirement now also extends to cross-lexicon links
 since Vallex now has three additional sister projects, all linking back to its data: NomVallex, a lexicon of deverbal nouns; RU-Vallex, a lexicon of Russian verbs; and PL-Vallex, a lexicon of Polish verbs. Integrating such
-cross-lexicon link validation into the old pipeline seems impossible.
+cross-lexicon link validation into the old pipeline seems close to impossible.
 
 %----------------------------------------------------------------------------------------
 %	DESIGN OF THE SYSTEM
@@ -229,7 +231,7 @@ with a number linguistic properties,
 e.g.\
 semantic (a gloss of the given meaning,
 indication of primary and metaphorical meanings),
-syntactic (does the given LU enter syntactic structures such as passive, reflexive and reciprocal constructions?),
+syntactic (does the given lexical unit enter syntactic structures such as passive, reflexive and reciprocal constructions?),
 and features specific to valency lexicons
 (the valency frame and annotation of individual valency complementations with a functor, obligatoriness and a list of possible forms of expressions;
 indication of control, i.e.\ for a given lexical unit realizing one of its complementations through an infinitive,
