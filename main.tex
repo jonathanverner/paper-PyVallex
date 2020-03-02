@@ -64,6 +64,7 @@
 \newcommand{\av}[1]{{\color{ansa} AV: #1}}
 \newcommand{\avout}[2][]{{\color{ansa} AV:}{\color{lightgray}\textbf{#2}} {\color{ansa} #1}}
 \newcommand{\jv}[1]{{\color{svlinks} JV: #1}}
+\newcommand{\rrr}[1]{{\color{red} REVIEWER: #1}}
 \newcommand{\dismiss}[1]{}
 
 
@@ -117,8 +118,11 @@
 %----------------------------------------------------------------------------------------
 
 \abstract{
-We present PyVallex, a Python-based system for presenting, searching/filtering, editing/extending and processing
-of lexicon data originally available in a text-based format. The system consists of several components:
+We present PyVallex, a Python-based system for presenting, searching/filtering, editing/extending and automatic processing
+of lexicon data 
+\rrr{At this point, I would like to know more about what lexicon data. What does this entail?}
+\av{Přidala jsem ``automatic''; mám pocit, že to je blíž specifikováno v následující větě, nevím, co bych s tím ještě mohla udělat.}
+originally available in a text-based format. The system consists of several components:
 a parser for the specific lexicon format used in several valency lexicons,
 a data-validation framework, a regular expression based search engine,
 a map-reduce style framework for querying the lexicon data and a web-based interface integrating
@@ -153,13 +157,15 @@ The PDT-Vallex was fully integrated with the tree editor and search tool TrEd%
 and its native format is now XML-based.
 In contrast, 
 the Vallex project still uses the original pipeline based on a text-based format
-processed by a sequence of scripts that lead to an intermediate representation as XML-data
+converted by a sequence of scripts to an intermediate representation as XML-data
 \cite{Zabokrtsky05valency}
 and final presentations as web-pages (with individual lexicon entries stored in html files)
-and a pdf/printed lexicon (produced via TeX).
+and a PDF/printed lexicon (produced via TeX).
 The annotators are reluctant to move away from the text-based format which they can use with a common text-editor
 (with custom syntax highlighting definition files relying on a set of markup conventions);
 this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
+\rrr{Please check "author (year)" and "(author, year)" throughout the submission. I think here it should be "e.g. Benko (2019)".}
+\av{Podle mě je správně takto.}
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search are not well documented and have a significant
 maintenance cost.
@@ -215,7 +221,7 @@ code. Although Python (as is the case also for Perl) is a weakly typed language,
 to enforce the use of type hints via the \emph{mypy} static type checker \cite{tool:mypy} run before every commit.
 This makes the code effectively strongly-typed. In the interest of maintainability, we also enforce
 a uniform coding style through the use of a commit-hook which runs \emph{autopep} \cite{tool:autopep8}
-on the commited code.
+on the committed code.
 
 We expect that most annotators will learn to use selected features of PyVallex over time, especially the search/filtering functions, tabular output and editing of existing lexical units.
 The old system of custom-made scripts will be used alongside PyVallex for some time, until all of its functionalities are fully implemented and tested.
@@ -226,18 +232,29 @@ The old system of custom-made scripts will be used alongside PyVallex for some t
 %----------------------------------------------------------------------------------------
 \section{Data Layer}
 A valency lexicon consists of a collection of \emph{Lexemes}. A Lexeme represents a group of related
-lexical units that share the same lemma or (as in the case of Vallex, NomVallex, and other lexicons) a group of derivationally related lemmas. Each lexical unit corresponds to a single meaning of these lemmas. Each lexical unit can be annotated
-with a number linguistic properties,
-e.g.\
+lexical units that share the same lemma or (as in the case of Vallex, NomVallex, and other lexicons) a group of derivationally related lemmas. 
+Each lexical unit corresponds to a single meaning of these lemmas\avout[ and ]{. Each lexical unit} can be annotated
+with a number linguistic properties\avout[, see Figures \ref{fig:txt-fmt} and \ref{fig:ui-lexical-unit-src}--\ref{fig:ui-editing}. We refer to the annotated properties as \emph{attributes}; they may be ]{,
+e.g.\ }
 semantic (a gloss of the given meaning,
 indication of primary and metaphorical meanings),
 syntactic (does the given lexical unit enter syntactic structures such as passive, reflexive and reciprocal constructions?),
-and features specific to valency lexicons
+\avout[or]{and features} specific to valency lexicons
 (the valency frame and annotation of individual valency complementations with a functor, obligatoriness and a list of possible forms of expressions;
 indication of control, i.e.\ for a given lexical unit realizing one of its complementations through an infinitive,
 indicate which other valency complementation is referentially identical with the subject of this infinitive).
 
-The data layer definition is provided in the \py{vallex.data\_structures} module and consists of the
+The data layer definition is provided in the \py{vallex.data\_structures} module%
+\footnote{%
+\rrr{The module is called "vallex.data\_structures". The name suggests that it is specific to Vallex. Is that the case?
+} 
+\av{Currently, data structures that are general
+(\py{Lexicon}, \py{Lexeme}, \py{LexicalUnit}, \py{Attrib}, \py{Lemma})
+are defined in the same module as data structures that are Vallex-specific 
+(\py{Frame}, \py{SpecVal}).
+}
+}
+and consists of the
 following classes:
 \py{Lexicon} (representing a collection of \emph{lexemes}), \py{Lexeme} (representing
 a single \emph{lexeme}), \py{LexicalUnit} (representing a \emph{lexical unit}, i.e.\ a single meaning), \py{Attrib} (representing a linguistically relevant property of a \emph{lexical unit}). The \py{Attrib} class also has several specializations:
@@ -249,16 +266,22 @@ It is expected that further specializations
 will be defined to deal with particular properties.
 
 Each of the above classes can store textual comments (which can be used to explain
-the reasoning behind a specific annotation, mark the data element as work in progress, etc). They can also
-store the original unparsed form (in the original text-based format) together with its location in the
-source files and they all provide a method to convert the data into a JSON representable structure.
+the reasoning behind a specific annotation, mark the data element as work in progress, etc). 
+They can also
+store the original unparsed form (in the original text-based format) 
+\rrr{Why do you store this information? You only need a reference to it (and you store that as well).}
+together with its location in the source files 
+and they all provide a method to convert the data into a JSON representable structure.
 
 %----------------------------------------------------------------------------------------
 %	CORE COMPONENTS
 %----------------------------------------------------------------------------------------
 \section{Core components}
 The core of the system consists of a \emph{parser module} which takes care of parsing the data and
-constructing an in-memory representation of it---the data layer; a \emph{search module} which
+constructing an in-memory representation of it---the data layer; 
+\rrr{How does this relate? In particular, how is the parser module related to the data layer?}
+\av{Nerozumím otázce.}
+a \emph{search module} which
 provides query capabilities; a \emph{script module} which provides a framework for running data validation
 and batch processing scripts; and an \emph{output module} which converts the in-memory representation into
 various output formats. Each of these components is implemented in a python submodule of the main \py{vallex}
@@ -310,7 +333,9 @@ The search module provides query capabilities to the system.
 A query is a collection of conditions
 and the result of the query is a set of lexical units each of which meets all
 of the conditions of the query. Each condition consists of a \emph{selector} and a
-\emph{pattern}. For each lexical unit the \emph{selector} is passed to a \py{match\_key\_values}
+\emph{pattern}. 
+\rrr{I don't understand the power of the selector. Is this a conjunctive search only or can you also do a disjunctive search? What about negations?}
+For each lexical unit the \emph{selector} is passed to a \py{match\_key\_values}
 function which constructs a list of strings. A lexical unit satisfies the condition if at
 least one of the strings matches the \emph{pattern}, which is a regular expression.
 The \emph{selector} is a dot-separated list of strings. The standard implementation of the
@@ -320,7 +345,10 @@ function to construct the list of strings to be matched against. The standard im
 of the attribute's \py{match\_key\_values} method returns the attribute's textual representation
 if the \emph{selector} is empty, its source form if the selector is 'src' and otherwise treats
 the selector as a path through the attributes structure treated as a tree. It resolves the path and returns the
-value present in the relevant node. For example a query consisting of the single condition
+value present in the relevant node. 
+\rrr{You provide some examples, but I don't really understand what they do. What does the example you provide at the end of the left column on page 3 do (in particular what does the period do)?}
+\av{Nevím si s tím rady, přijde mi, že ten příklad je vysvětlený dobře, snad tu poznámku napsal dřív, než si přečetl celé vysvětlení? Ale nevím, jak zabránit tomu, aby na chvíli byl člověk zmatený a na druhé čtení už mu to snad bylo jasné...}
+For example a query consisting of the single condition
 \begin{verbatim}
     example.pf=.*od.*
 \end{verbatim}
@@ -343,8 +371,11 @@ Note that besides the internal structure of attributes output by the parser (Sec
 selectors may also access computed properties and results of tests (Section \ref{sec:computed});
 in particular, it is possible to formulate a query for all units that failed a given test,
 e.g.\ a query of the form
+%\begin{verbatim}
+%    error.acc_without_deagent=.
+%\end{verbatim}
 \begin{verbatim}
-    error.acc_without_deagent=.
+    error.lvc_references=.
 \end{verbatim}
 would match all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
 
@@ -375,39 +406,71 @@ argument is passed --- a collection of lexicons, a single lexicon, a single lexe
 for simplicity here and also in the paragraphs dedicated to other types of procedures we discuss only the sub-type receiving a lexical unit.}
 It checks whether the unit satisfies the test and raises an appropriate exception if it doesn't. The framework
 iterates over all lexical units passing them in turn to each test procedure and collecting the results. The
-results are saved in the in-memory representation and can then be displayed to the user (\autoref{fig:test-result})
+results are saved in the in-memory representation and can then be displayed to the user (\autoref{fig:test-result}).
 \begin{figure}
-    \includegraphics[width=0.8\hsize]{images/test-result.png}
+    \includegraphics[width=\hsize]{images/test-result.png}
     \caption{\label{fig:test-result}The web-based UI showing the result of a data-validation run on a lexical unit.}
 \end{figure}
 The results are also annotated with the docstring of the test-procedure which can be used to provide human
 readable explanation of the failed result. An example data validation test is provided in \autoref{fig:data-test-code}.
 \begin{figure}
 \small
+%%\rrr{Figure 3 and Figure 4. Why not use the same test in both figures? That would provide more insight.}
+% \begin{minted}{python}
+% def test_lu_acc_without_deagent(lu):
+%   """
+%     Verbs that allow accusative form
+%     of one of their complementations
+%     must also allow the deagentive
+%     diathesis.
+%   """
+%   forms = sum(
+%      [fe.forms for fe in lu.frame.elements],
+%      []
+%   )
+%   has_acc = '4' in forms or
+%               'adj-4' in forms
+% 
+%   if not has_acc or lu.isReflexverb:
+%     raise TestDoesNotApply
+% 
+%   deagent = 'diat' in lu.attribs and
+%       'deagent' in lu.attribs['diat']._data
+% 
+%   if not deagent:
+%       raise TestFailed()
+% \end{minted}
 \begin{minted}{python}
-def test_lu_acc_without_deagent(lu):
+@requires('lumap')
+def test_lu_lvc_references(lu, lumap):
   """
-    Verbs that allow accusative form
-    of one of their complementations
-    must also allow the deagentive
-    diathesis.
+    In attributes with links, each link
+    should point to an existing lu.
   """
-  forms = sum(
-     [fe.forms for fe in lu.frame.elements],
-     []
-  )
-  has_acc = '4' in forms or
-              'adj-4' in forms
-
-  if not has_acc or lu.isReflexverb:
+  failures = []
+  lvc_variants = [k for k in lu.attribs.keys()
+                    if k.startswith('lvc')]
+  if not lvc_variants:
     raise TestDoesNotApply
-
-  deagent = 'diat' in lu.attribs and
-      'deagent' in lu.attribs['diat']._data
-
-  if not deagent:
-      raise TestFailed()
+  applies = False
+  for attrib in lvc_variants:
+    if not \
+      isinstance(lu.attribs[attrib]._data,
+                 dict):
+      continue
+    refs = lu.attribs[attrib]._data['ids']
+    if refs:
+      applies = True
+      for ref in refs:
+        if not ref._id.startswith('@') \
+           and ref._id not in lumap:
+          failures.append(str(ref._id))
+  if failures:
+    raise TestFailed("The following \
+             references not found in db: "
+             +','.join(failures))
 \end{minted}
+
 \caption{\label{fig:data-test-code}An example of a data-validation procedure}
 \end{figure}
 
@@ -426,6 +489,7 @@ used when no specialized reducer is provided by the user. Note that, although ma
 parallel processing, here all the mappers and reducers are run sequentially---the small size of the data does not justify
 the additional complexity of parallel processing. We use map/reduce only as a familiar paradigm for structuring
 analysis code.
+\rrr{Could you potentially implement the map/reduce system in parallel form as well (even though that is not done currently)?}
 
 %------------------------------------------------
 \subsection{Output}\label{sec:output}
@@ -447,7 +511,8 @@ one of the XML-based internationally recognized formats such as XML:TEI or the R
 Although the PyVallex system provides a command line UI for performing searches, computing histograms
 and running batch scripts, it is expected that most of its users will prefer a nicer graphical user interface.
 We have decided to provide the GUI as a web-based interface. This has several advantages. First, it allows
-the system to be installed on a server and be accessible to users without forcing them to aquire the comparatively large datasets or requiring them to maintain the installation. Moreover, web-based technologies are very
+the system to be installed on a server and be accessible to users without forcing them to acquire the needed datasets
+or requiring them to maintain the installation. Moreover, web-based technologies are very
 common and basing the UI on them considerably lowers the barrier for new contributors/maintainers. It
 is expected that even a person without a detailed knowledge of the system would be able to contribute simple modifications to the UI in a short amount of time. Finally, using a webview widget provided by the
 \emph{Qt library} \cite{tool:Qt},
@@ -481,7 +546,7 @@ and see a full listing of the selector--value pairs for the given unit.
 Currently, two view modes are provided for lexical units:
 in the Source View mode, the complete portion of the source file that corresponds to the given lexical unit is run through a simple regex-based syntax highlighter that mimics the function of the text editor known to the annotators.
 On the other hand, the Default View mode is based on a template that can access the complete output of the parser (Section \ref{parser})
-as well as computed properties not present in the source files (\ref{sec:computed})
+as well as computed properties not present in the source files (Section \ref{sec:computed})
 and the full formatting capabilities of the \emph{Vue.js} framework.
 A particularly useful feature of the Default View is the fact that linked lexical units
 (such as source verbs of deverbal nouns or translation equivalents in case of our Russian and Polish lexicons)
@@ -530,16 +595,19 @@ the user is warned and no changes are stored. Upon request, the contents of the 
 %----------------------------------------------------------------------------------------
 \section{Future work}
 Some features of our old pipeline,
-e.g.\ xml and pdf output,
+e.g.\ XML and PDF output,
 have yet to be implemented in PyVallex.
-It is also only available in source code form\footnote{\url{https://gitlab.com/Verner/pyvallex}} and we plan to publish it as pre-built
+PyVallex is currently only available in source code form\footnote{\url{https://gitlab.com/Verner/pyvallex}}, 
+although we plan to publish it as pre-built
 package in the PyPi package repository. The client-side \emph{Qt}-based GUI is now distributed as a stand-alone
-executable file. Although this has some advantages (simplicity, easy updates), it has a significant
+executable file\av{s for Unix and Windows operating systems}.
+\rrr{In what format is this? Is this operating system independent? (How accessible/usable is this to users on different operating systems?)}
+Although this has some advantages (simplicity, easy updates), it has a significant
 performance cost---the single file is basically a self-extracting archive which must unpack itself
 every time the program is run.
 
 While the client-side \emph{Qt}-based GUI allows for basic editing, it would be nice to incorporate this into
-the web UI. This will require some form of user authentication/authorization to be implemented.
+the web-based UI. This will require some form of user authentication/authorization to be implemented.
 Eventually, the editing capabilities could be extended to allow for more comprehensive
 edits (including creating new lexemes/lexical units). This would allow some annotators
 to use the PyVallex system as the main or only tool to create or edit
@@ -568,9 +636,9 @@ it is natural to use the resulting internal representation of the data as the in
 In short, the PyVallex framework is a result of the wish to enable developers to write a parser and then reuse the resulting representation for multiple purposes.
 Although most of the current development of PyVallex concentrates on the Vallex-specific functions,
 the general framework is ready to work with other data models as well.
-We thank the anonymous referees for pointing out that as a first step towards adoption of PyVallex by other projects,
+\av{We thank the anonymous referees for pointing out that as a first step towards adoption of PyVallex by other projects,
 we could implement parsers and output functions for internationally recognized lexicon exchange formats.
-In fact, we could go even further and make sure that the internal representation of lexicon data in PyVallex reflects the OntoLex-Lemon model.
+In fact, we could go even further and make sure that the internal representation of lexicon data in PyVallex reflects the OntoLex-Lemon model.}
 
 
 \section{Acknowledgements}
@@ -579,6 +647,8 @@ The research reported in this paper has been supported by the projects No.\ 18-0
 The first author was also supported by Charles University Research Centre program No.\ UNCE/SCI/022 and by the Progres grant Q14. Krize racionality a {modern\'\i} my\v{s}len\'\i.
 
 This work has been using language resources stored and distributed by the \textit{LINDAT-CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic, project No. LM2015071.
+
+\av{We thank the anonymous referees for their valuable suggestions, and in particular the second referee for detailed comments about individual spots in the text.}
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
