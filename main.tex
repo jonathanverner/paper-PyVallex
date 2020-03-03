@@ -235,14 +235,13 @@ The old system of custom-made scripts will be used alongside PyVallex for some t
 %----------------------------------------------------------------------------------------
 \section{Data Layer}
 A valency lexicon consists of a collection of \emph{Lexemes}. A Lexeme represents a group of related
-lexical units that share the same lemma or (as in the case of Vallex, NomVallex, and other lexicons) a group of derivationally related lemmas. 
-Each lexical unit corresponds to a single meaning of these lemmas\avout[ and ]{. Each lexical unit} can be annotated
-with a number linguistic properties\avout[, see Figures \ref{fig:txt-fmt} and \ref{fig:ui-lexical-unit-src}--\ref{fig:ui-editing}. We refer to the annotated properties as \emph{attributes}; they may be ]{,
-e.g.\ }
+lexical units that share the same lemma or (as in the case of Vallex, NomVallex, and other lexicons) a group of derivationally related lemmas.
+Each lexical unit corresponds to a single meaning of these lemmas. Each lexical unit can be annotated
+with a number linguistic properties, e.g.\
 semantic (a gloss of the given meaning,
 indication of primary and metaphorical meanings),
 syntactic (does the given lexical unit enter syntactic structures such as passive, reflexive and reciprocal constructions?),
-\avout[or]{and features} specific to valency lexicons
+and features specific to valency lexicons
 (the valency frame and annotation of individual valency complementations with a functor, obligatoriness and a list of possible forms of expressions;
 indication of control, i.e.\ for a given lexical unit realizing one of its complementations through an infinitive,
 indicate which other valency complementation is referentially identical with the subject of this infinitive).
@@ -639,9 +638,9 @@ it is natural to use the resulting internal representation of the data as the in
 In short, the PyVallex framework is a result of the wish to enable developers to write a parser and then reuse the resulting representation for multiple purposes.
 Although most of the current development of PyVallex concentrates on the Vallex-specific functions,
 the general framework is ready to work with other data models as well.
-\av{We thank the anonymous referees for pointing out that as a first step towards adoption of PyVallex by other projects,
+We thank the anonymous referees for pointing out that as a first step towards adoption of PyVallex by other projects,
 we could implement parsers and output functions for internationally recognized lexicon exchange formats.
-In fact, we could go even further and make sure that the internal representation of lexicon data in PyVallex reflects the OntoLex-Lemon model.}
+In fact, we could go even further and make sure that the internal representation of lexicon data in PyVallex reflects the OntoLex-Lemon model.
 
 
 \section{Acknowledgements}
