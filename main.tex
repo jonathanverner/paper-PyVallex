@@ -270,11 +270,13 @@ It is expected that further specializations
 will be defined to deal with particular properties.
 
 Each of the above classes can store textual comments (which can be used to explain
-the reasoning behind a specific annotation, mark the data element as work in progress, etc). 
-They can also
-store the original unparsed form (in the original text-based format) 
+the reasoning behind a specific annotation, mark the data element as work in progress, etc)
+% They can also
+% store the original unparsed form (in the original text-based format)
 \rrr{Why do you store this information? You only need a reference to it (and you store that as well).}
-together with its location in the source files 
+\jv{For efficiency reasons, but it is an implementation detail, so we can probably drop this: ``They can also
+store the original unparsed form (in the original text-based format
+together with its location in the source files''}
 and they all provide a method to convert the data into a JSON representable structure.
 
 %----------------------------------------------------------------------------------------
