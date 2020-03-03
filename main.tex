@@ -497,7 +497,8 @@ uses a framework-provided \py{emit} function to emit a collection of \py{(key, v
 iterates over all lexical-units passing them to the mapper functions and collecting the resulting pairs. It then groups them by the \py{key} component and passes the groups to the reducer which can do further processing.
 A default reducer which just counts the number of values for a given key is provided by the framework and is
 used when no specialized reducer is provided by the user. Note that, although map/reduce is now commonly associated with
-parallel processing, here all the mappers and reducers are run sequentially---the small size of the data does not justify
+parallel processing, here all the mappers and reducers are run sequentially---\jv{while running them in parallel would
+be possible,} the small size of the data does not justify
 the additional complexity of parallel processing. We use map/reduce only as a familiar paradigm for structuring
 analysis code.
 \rrr{Could you potentially implement the map/reduce system in parallel form as well (even though that is not done currently)?}
