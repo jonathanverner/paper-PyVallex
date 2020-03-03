@@ -357,6 +357,7 @@ the selector as a path through the attributes structure treated as a tree. It re
 value present in the relevant node. 
 \rrr{You provide some examples, but I don't really understand what they do. What does the example you provide at the end of the left column on page 3 do (in particular what does the period do)?}
 \av{Nevím si s tím rady, přijde mi, že ten příklad je vysvětlený dobře, snad tu poznámku napsal dřív, než si přečetl celé vysvětlení? Ale nevím, jak zabránit tomu, aby na chvíli byl člověk zmatený a na druhé čtení už mu to snad bylo jasné...}
+\jv{Myslím, že jsi se dívala na špatný příklad, šlo o ty failnuté testy; přidal jsem vysvětlující poznámku}
 For example a query consisting of the single condition
 \begin{verbatim}
     example.pf=.*od.*
@@ -386,7 +387,8 @@ e.g.\ a query of the form
 \begin{verbatim}
     error.lvc_references=.
 \end{verbatim}
-would match all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
+would match\footnote{\jv{The pattern consists of a single dot so it matches any unit which has a \emph{non-empty} value
+for \py{error.lvc\_references}}} all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
 
 
 \subsubsection{Executing queries}\label{sec:execute_query}
