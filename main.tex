@@ -339,8 +339,10 @@ The search module provides query capabilities to the system.
 \subsubsection{Queries}\label{sec:query}
 A query is a collection of conditions
 and the result of the query is a set of lexical units each of which meets all
-of the conditions of the query. Each condition consists of a \emph{selector} and a
-\emph{pattern}. 
+of the conditions of the query\footnote{\jv{Experience seems to suggest that disjunctive conditions
+and negations are not used very much. At the cost of complexity of the query language it would
+be easy to extend it to also cover these cases.}}. Each condition consists of a \emph{selector} and a
+\emph{pattern}.
 \rrr{I don't understand the power of the selector. Is this a conjunctive search only or can you also do a disjunctive search? What about negations?}
 For each lexical unit the \emph{selector} is passed to a \py{match\_key\_values}
 function which constructs a list of strings. A lexical unit satisfies the condition if at
