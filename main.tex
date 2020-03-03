@@ -609,14 +609,15 @@ the user is warned and no changes are stored. Upon request, the contents of the 
 Some features of our old pipeline,
 e.g.\ XML and PDF output,
 have yet to be implemented in PyVallex.
-PyVallex is currently only available in source code form\footnote{\url{https://gitlab.com/Verner/pyvallex}}, 
+PyVallex is currently only available in source code form\footnote{\url{https://gitlab.com/Verner/pyvallex}},
 although we plan to publish it as pre-built
-package in the PyPi package repository. The client-side \emph{Qt}-based GUI is now distributed as a stand-alone
-executable file\av{s for Unix and Windows operating systems}.
-\rrr{In what format is this? Is this operating system independent? (How accessible/usable is this to users on different operating systems?)}
+package in the PyPi package repository. The client-side \emph{Qt}-based GUI is now distributed \jv{as a Windows
+and a Unix standalone executable which should, in principle, be runnable on multiple versions of the operating
+systems}.
 Although this has some advantages (simplicity, easy updates), it has a significant
 performance cost---the single file is basically a self-extracting archive which must unpack itself
-every time the program is run.
+every time the program is run. \jv{This choice should be revisited once we gather more user
+feedback.}
 
 While the client-side \emph{Qt}-based GUI allows for basic editing, it would be nice to incorporate this into
 the web-based UI. This will require some form of user authentication/authorization to be implemented.
