@@ -157,7 +157,7 @@ The PDT-Vallex was fully integrated with the tree editor and search tool TrEd%
 \footnote{\url{https://ufal.mff.cuni.cz/tred/}}
 \cite{PajasStepanek08recent}
 and its native format is now XML-based.
-In contrast, 
+In contrast,
 the Vallex project still uses the original pipeline based on a text-based format
 converted by a sequence of scripts to an intermediate representation as XML-data
 \cite{Zabokrtsky05valency}
@@ -249,7 +249,7 @@ indicate which other valency complementation is referentially identical with the
 The data layer definition is provided in the \py{vallex.data\_structures} module%
 \footnote{%
 \rrr{The module is called "vallex.data\_structures". The name suggests that it is specific to Vallex. Is that the case?
-} 
+}
 \av{Currently, data structures that are general
 (\py{Lexicon}, \py{Lexeme}, \py{LexicalUnit}, \py{Attrib}, \py{Lemma})
 are defined in the same module as data structures that are Vallex-specific
@@ -354,7 +354,7 @@ function to construct the list of strings to be matched against. The standard im
 of the attribute's \py{match\_key\_values} method returns the attribute's textual representation
 if the \emph{selector} is empty, its source form if the selector is 'src' and otherwise treats
 the selector as a path through the attributes structure treated as a tree. It resolves the path and returns the
-value present in the relevant node. 
+value present in the relevant node.
 \rrr{You provide some examples, but I don't really understand what they do. What does the example you provide at the end of the left column on page 3 do (in particular what does the period do)?}
 \av{Nevím si s tím rady, přijde mi, že ten příklad je vysvětlený dobře, snad tu poznámku napsal dřív, než si přečetl celé vysvětlení? Ale nevím, jak zabránit tomu, aby na chvíli byl člověk zmatený a na druhé čtení už mu to snad bylo jasné...}
 \jv{Myslím, že jsi se dívala na špatný příklad, šlo o ty failnuté testy; přidal jsem vysvětlující poznámku}
@@ -441,13 +441,13 @@ readable explanation of the failed result. An example data validation test is pr
 %   )
 %   has_acc = '4' in forms or
 %               'adj-4' in forms
-% 
+%
 %   if not has_acc or lu.isReflexverb:
 %     raise TestDoesNotApply
-% 
+%
 %   deagent = 'diat' in lu.attribs and
 %       'deagent' in lu.attribs['diat']._data
-% 
+%
 %   if not deagent:
 %       raise TestFailed()
 % \end{minted}
@@ -511,7 +511,7 @@ output (which is implemented in the data-layer), new formats can be defined usin
 Currently only a single txt format is provided which outputs the in-memory representation in the same
 format that the annotators use. This can be used to check the fidelity of the in-memory representation
 (by comparing it with the original source) and for normalizing the sources. In the future other formats
-may be added, e.g., 
+may be added, e.g.,
 one of the XML-based internationally recognized formats such as XML:TEI or the RDF/XML serialization of the OntoLex-Lemon model.
 
 %----------------------------------------------------------------------------------------
