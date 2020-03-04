@@ -84,7 +84,6 @@
 % }
 
 
-%% \av{KTEREJ BLB TOHLE VYMYSLEL?}
 % \name{Author1, Author2, Author3}
 
 % \address{Affiliation1, Affiliation2, Affiliation3 \\
@@ -98,7 +97,7 @@
          \textbf{2:} Charles University, Faculty of Arts, Department of Logic\\
          \textbf{1:} Malostransk{\'{e}} n{\'{a}}m{\v{e}}st{\'{i}} 25, 118 00 Prague 1, Czech Republic;
          \textbf{2:} Celetn\'a 20, 110 00 Prague 1, Czech Republic\\
-         vernerova@ufal.mff.cuni.cz, jonathan@temno.eu\\}
+         jonathan@temno.eu, vernerova@ufal.mff.cuni.cz\\}
 
 
 % Example of a one line author/institution relationship
@@ -120,10 +119,6 @@
 \abstract{
 We present PyVallex, a Python-based system for presenting, searching/filtering, editing/extending and automatic processing
 of machine-readable lexicon data
-\rrr{At this point, I would like to know more about what lexicon data. What does this entail?}
-\av{Přidala jsem ``automatic''; mám pocit, že to je blíž specifikováno v následující větě, nevím, co bych s tím ještě mohla udělat.}
-\jv{přidal jsem machine-readable; možná mu šlo o to, jaká data jsou v lexikonu přítomná (valence, examples,...) ale
-nevím, jak to sem nacpat a zároveň udržet abstrakt krátkým a úderným; asi bych to nechal tak, jak to je}
 originally available in a text-based format. The system consists of several components:
 a parser for the specific lexicon format used in several valency lexicons,
 a data-validation framework, a regular expression based search engine,
@@ -166,9 +161,6 @@ and a PDF/printed lexicon (produced via TeX).
 The annotators are reluctant to move away from the text-based format which they can use with a common text-editor
 (with custom syntax highlighting definition files relying on a set of markup conventions);
 this situation is not unique to the Vallex project, e.g.\ \cite{Benko19LexiCorp}.
-\rrr{Please check "author (year)" and "(author, year)" throughout the submission. I think here it should be "e.g. Benko (2019)".}
-\av{Podle mě je správně takto.}
-\jv{Souhlasím s Anšou}
 On the other hand, the set of custom scripts for format conversions,
 validity checking, and custom search are not well documented and have a significant
 maintenance cost.
@@ -248,15 +240,13 @@ indicate which other valency complementation is referentially identical with the
 
 The data layer definition is provided in the \py{vallex.data\_structures} module%
 \footnote{%
-\rrr{The module is called "vallex.data\_structures". The name suggests that it is specific to Vallex. Is that the case?
-}
-\av{Currently, data structures that are general
-(\py{Lexicon}, \py{Lexeme}, \py{LexicalUnit}, \py{Attrib}, \py{Lemma})
-are defined in the same module as data structures that are Vallex-specific
-(\py{Frame}, \py{SpecVal}).
-}
-\jv{For historical reasons, the main package is called \py{vallex} although most of the functionality
-is not specific to the 'Vallex' lexicon.}
+For historical reasons, 
+%data structures that are general
+%(\py{Lexicon}, \py{Lexeme}, \py{LexicalUnit}, \py{Attrib}, \py{Lemma})
+%are defined in the same module as data structures that are Vallex-specific
+%(\py{Frame}, \py{SpecVal}).
+the main package is called \py{vallex} although most of the functionality
+is not specific to the 'Vallex' lexicon.
 }
 and consists of the
 following classes:
@@ -273,10 +263,9 @@ Each of the above classes can store textual comments (which can be used to expla
 the reasoning behind a specific annotation, mark the data element as work in progress, etc)
 % They can also
 % store the original unparsed form (in the original text-based format)
-\rrr{Why do you store this information? You only need a reference to it (and you store that as well).}
-\jv{For efficiency reasons, but it is an implementation detail, so we can probably drop this: ``They can also
-store the original unparsed form (in the original text-based format
-together with its location in the source files''}
+%together with its location in the source files
+%%\rrr{Why do you store this information? You only need a reference to it (and you store that as well).}
+%%\jv{For efficiency reasons, but it is an implementation detail
 and they all provide a method to convert the data into a JSON representable structure.
 
 %----------------------------------------------------------------------------------------
@@ -284,10 +273,7 @@ and they all provide a method to convert the data into a JSON representable stru
 %----------------------------------------------------------------------------------------
 \section{Core components}
 The core of the system consists of a \emph{parser module} which takes care of parsing the data and
-constructing \jv{the data-layer---an in-memory representation of the data};
-\rrr{How does this relate? In particular, how is the parser module related to the data layer?}
-\av{Nerozumím otázce.}
-\jv{Třeba to bude takto srozumitelnější?}
+constructing the data-layer---an in-memory representation of the data;
 a \emph{search module} which
 provides query capabilities; a \emph{script module} which provides a framework for running data validation
 and batch processing scripts; and an \emph{output module} which converts the in-memory representation into
@@ -339,11 +325,11 @@ The search module provides query capabilities to the system.
 \subsubsection{Queries}\label{sec:query}
 A query is a collection of conditions
 and the result of the query is a set of lexical units each of which meets all
-of the conditions of the query\footnote{\jv{Experience seems to suggest that disjunctive conditions
-and negations are not used very much. At the cost of complexity of the query language it would
-be easy to extend it to also cover these cases.}}. Each condition consists of a \emph{selector} and a
+of the conditions of the query\footnote{Experience seems to suggest that disjunctive conditions
+are not used very much. A limited spectrum of negative conditions can be formulated.
+At the cost of complexity of the query language, it would
+be easy to extend it to also additional types of queries.}. Each condition consists of a \emph{selector} and a
 \emph{pattern}.
-\rrr{I don't understand the power of the selector. Is this a conjunctive search only or can you also do a disjunctive search? What about negations?}
 For each lexical unit the \emph{selector} is passed to a \py{match\_key\_values}
 function which constructs a list of strings. A lexical unit satisfies the condition if at
 least one of the strings matches the \emph{pattern}, which is a regular expression.
@@ -355,9 +341,6 @@ of the attribute's \py{match\_key\_values} method returns the attribute's textua
 if the \emph{selector} is empty, its source form if the selector is 'src' and otherwise treats
 the selector as a path through the attributes structure treated as a tree. It resolves the path and returns the
 value present in the relevant node.
-\rrr{You provide some examples, but I don't really understand what they do. What does the example you provide at the end of the left column on page 3 do (in particular what does the period do)?}
-\av{Nevím si s tím rady, přijde mi, že ten příklad je vysvětlený dobře, snad tu poznámku napsal dřív, než si přečetl celé vysvětlení? Ale nevím, jak zabránit tomu, aby na chvíli byl člověk zmatený a na druhé čtení už mu to snad bylo jasné...}
-\jv{Myslím, že jsi se dívala na špatný příklad, šlo o ty failnuté testy; přidal jsem vysvětlující poznámku}
 For example a query consisting of the single condition
 \begin{verbatim}
     example.pf=.*od.*
@@ -387,8 +370,8 @@ e.g.\ a query of the form
 \begin{verbatim}
     error.lvc_references=.
 \end{verbatim}
-would match\footnote{\jv{The pattern consists of a single dot so it matches any unit which has a \emph{non-empty} value
-for \py{error.lvc\_references}}} all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
+would match\footnote{The pattern consists of a single dot so it matches any unit with a \emph{non-empty} value
+of \py{error.lvc\_references} .} all lexical units that failed the test shown in Figure \ref{fig:data-test-code}.
 
 
 \subsubsection{Executing queries}\label{sec:execute_query}
@@ -497,11 +480,10 @@ uses a framework-provided \py{emit} function to emit a collection of \py{(key, v
 iterates over all lexical-units passing them to the mapper functions and collecting the resulting pairs. It then groups them by the \py{key} component and passes the groups to the reducer which can do further processing.
 A default reducer which just counts the number of values for a given key is provided by the framework and is
 used when no specialized reducer is provided by the user. Note that, although map/reduce is now commonly associated with
-parallel processing, here all the mappers and reducers are run sequentially---\jv{while running them in parallel would
-be possible,} the small size of the data does not justify
+parallel processing, here all the mappers and reducers are run sequentially---while running them in parallel would
+be possible, the small size of the data does not justify
 the additional complexity of parallel processing. We use map/reduce only as a familiar paradigm for structuring
 analysis code.
-\rrr{Could you potentially implement the map/reduce system in parallel form as well (even though that is not done currently)?}
 
 %------------------------------------------------
 \subsection{Output}\label{sec:output}
@@ -611,13 +593,13 @@ e.g.\ XML and PDF output,
 have yet to be implemented in PyVallex.
 PyVallex is currently only available in source code form\footnote{\url{https://gitlab.com/Verner/pyvallex}},
 although we plan to publish it as pre-built
-package in the PyPi package repository. The client-side \emph{Qt}-based GUI is now distributed \jv{as a Windows
+package in the PyPi package repository. The client-side \emph{Qt}-based GUI is now distributed as a Windows
 and a Unix standalone executable which should, in principle, be runnable on multiple versions of the operating
-systems}.
+systems.
 Although this has some advantages (simplicity, easy updates), it has a significant
 performance cost---the single file is basically a self-extracting archive which must unpack itself
-every time the program is run. \jv{This choice should be revisited once we gather more user
-feedback.}
+every time the program is run. This choice should be revisited once we gather more user
+feedback.
 
 While the client-side \emph{Qt}-based GUI allows for basic editing, it would be nice to incorporate this into
 the web-based UI. This will require some form of user authentication/authorization to be implemented.
@@ -661,7 +643,7 @@ The first author was also supported by Charles University Research Centre progra
 
 This work has been using language resources stored and distributed by the \textit{LINDAT-CLARIN} project of the Ministry of Education, Youth and Sports of the Czech Republic, project No. LM2015071.
 
-\jv{We thank the anonymous referees for their valuable suggestions, and in particular the second referee for his very detailed report.}
+We thank the anonymous referees for their valuable suggestions, and in particular the second referee for his very detailed report.
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
